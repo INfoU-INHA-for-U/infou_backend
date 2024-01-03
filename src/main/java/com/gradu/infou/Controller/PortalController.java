@@ -15,6 +15,12 @@ public class PortalController {
         return "search";
     }
 
+    @GetMapping("/test")
+    public String test2(){
+        return "test1";
+    }
+
+
     @GetMapping("/hello")
     public String hello(){
         return "hello";
