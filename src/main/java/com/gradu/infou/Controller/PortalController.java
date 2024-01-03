@@ -20,8 +20,14 @@ public class PortalController {
         return "test1";
     }
 
+
     @GetMapping("/hello")
     public String hello(){
         return "hello";
+    }
+
+    @GetMapping("/test")
+    public String test(){
+        return "test";
     }
 }
