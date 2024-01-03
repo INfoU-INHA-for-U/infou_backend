@@ -11,8 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/portal")
 public class PortalController {
     @GetMapping("/search")
-    public String search(){
+    public String search() {
         return "search";
+    }
+
+    @GetMapping("/test")
+    public String test2(){
+        return "test1";
+    }
 
     @GetMapping("/hello")
     public String hello(){
