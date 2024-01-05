@@ -40,6 +40,9 @@ public enum BaseResponseStatus {
     // [POST] /boards
     POST_BOARDS_EMPTY_TITLE(false, 2018, "제목은 두 글자 이상으로 작성해주세요."),
 
+    NOT_FOUND_PORTAL_FROM_LECTURE_NAME(false, 2019, "입력한 강의명으로 강의를 찾을 수 없습니다."),
+    NOT_FOUND_PORTAL_FROM_PROFESSOR_NAME(false, 2020, "입력한 교수명으로 강의를 찾을 수 없습니다."),
+
 
     /**
      * 3000 : Response 오류
