@@ -42,6 +42,7 @@ public enum BaseResponseStatus {
 
     NOT_FOUND_PORTAL_FROM_LECTURE_NAME(false, 2019, "입력한 강의명으로 강의를 찾을 수 없습니다."),
     NOT_FOUND_PORTAL_FROM_PROFESSOR_NAME(false, 2020, "입력한 교수명으로 강의를 찾을 수 없습니다."),
+    NOT_FOUND_PROFESSOR_FROM_PORTAL(false, 2021, "입력한 강의로 교수를 찾을 수 없습니다."),
 
 
     /**
