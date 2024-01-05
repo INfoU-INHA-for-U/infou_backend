@@ -3,6 +3,8 @@ package com.gradu.infou.Domain.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @Getter
+@ToString(exclude = {"portalProfessors"})
 public class Portal extends BaseTimeEntity {
 
     @Id
@@ -52,6 +55,7 @@ public class Portal extends BaseTimeEntity {
     @Column(length = 10, nullable = false)
     private Long detailUk;
 
+    @ToStringExclude
     @OneToMany(mappedBy = "portal", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<PortalProfessor> portalProfessors = new ArrayList<>();
 
