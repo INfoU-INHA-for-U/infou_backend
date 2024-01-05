@@ -5,9 +5,12 @@ import com.gradu.infou.Config.exception.BaseException;
 import com.gradu.infou.Domain.Dto.Controller.Condition;
 import com.gradu.infou.Domain.Dto.Controller.PortalSearchDto;
 import com.gradu.infou.Domain.Entity.PortalProfessor;
+import com.gradu.infou.Service.PortalService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,25 +19,30 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@Slf4j
 @Validated
 @RequestMapping("/v1/api")
 @RestController
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class PortalController {
 
+    private final PortalService portalService;
+
     @GetMapping("/search")
-    public BaseResponse<PortalSearchDto> PortalSearch(@RequestParam("major") @NotBlank String major, @RequestParam("keyword") @NotBlank String keyword, @RequestParam("condition") @NotBlank Condition condition){
+    public BaseResponse<PortalSearchDto> PortalSearch(@RequestParam("major") @NotBlank String major, @RequestParam("keyword") @NotBlank String keyword, @RequestParam("condition") Condition condition) {
 
-        List<PortalProfessor> res=null;
+        List<PortalProfessor> res = null;
 
-        if(condition.equals(Condition.name)){
+        if (condition.equals(Condition.name)) {
             res = portalService.searchByLectureName(major, keyword);
-        }
-        else if(condition.equals(Condition.professor)){
+        } else if (condition.equals(Condition.professor)) {
             res = portalService.searchByProfessorName(major, keyword);
 
         }
 
-        return BaseResponse<PortalSearchDto>(res);
+        PortalSearchDto portalSearchDto = new PortalSearchDto(res);
+        //log.error(res.toString());
+
+        return new BaseResponse < PortalSearchDto> (portalSearchDto);
     }
 }

@@ -1,11 +1,12 @@
 package com.gradu.infou.Domain.Entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.minidev.json.annotate.JsonIgnore;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
@@ -51,5 +52,8 @@ public class Portal extends BaseTimeEntity {
 
     @Column(length = 10, nullable = false)
     private Long detailUk;
+
+    @OneToMany(mappedBy = "portal", orphanRemoval = true, cascade = CascadeType.ALL)
+    private List<PortalProfessor> portalProfessors = new ArrayList<>();
 
 }
