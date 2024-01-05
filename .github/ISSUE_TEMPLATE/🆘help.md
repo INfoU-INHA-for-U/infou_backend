@@ -2,7 +2,7 @@
 name: "\U0001F198Help"
 about: I got trouble, help me please
 title: "[HELP]"
-labels: help wanted
+labels: ":sos: help"
 assignees: ''
 
 ---
