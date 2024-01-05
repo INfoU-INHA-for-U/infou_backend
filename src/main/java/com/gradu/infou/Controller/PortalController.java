@@ -1,4 +1,40 @@
 package com.gradu.infou.Controller;
 
+import com.gradu.infou.Config.BaseResponse;
+import com.gradu.infou.Config.exception.BaseException;
+import com.gradu.infou.Domain.Dto.Controller.Condition;
+import com.gradu.infou.Domain.Dto.Controller.PortalSearchDto;
+import com.gradu.infou.Domain.Entity.PortalProfessor;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@Validated
+@RequestMapping("/v1/api")
+@RestController
+@NoArgsConstructor
 public class PortalController {
+
+    @GetMapping("/search")
+    public BaseResponse<PortalSearchDto> PortalSearch(@RequestParam("major") @NotBlank String major, @RequestParam("keyword") @NotBlank String keyword, @RequestParam("condition") @NotBlank Condition condition){
+
+        List<PortalProfessor> res=null;
+
+        if(condition.equals(Condition.name)){
+            res = portalService.searchByLectureName(major, keyword);
+        }
+        else if(condition.equals(Condition.professor)){
+            res = portalService.searchByProfessorName(major, keyword);
+
+        }
+
+        return BaseResponse<PortalSearchDto>(res);
+    }
 }

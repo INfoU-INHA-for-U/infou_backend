@@ -40,6 +40,9 @@ public enum BaseResponseStatus {
     // [POST] /boards
     POST_BOARDS_EMPTY_TITLE(false, 2018, "제목은 두 글자 이상으로 작성해주세요."),
 
+    // Enum
+    CONDITION_INVALID(false, 2019, "condition이 유효하지 않습니다.(name or professor"),
+
 
     /**
      * 3000 : Response 오류
