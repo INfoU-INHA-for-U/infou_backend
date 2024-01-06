@@ -4,6 +4,7 @@ import com.gradu.infou.Config.BaseResponse;
 import com.gradu.infou.Config.exception.BaseException;
 import com.gradu.infou.Domain.Dto.Controller.Condition;
 import com.gradu.infou.Domain.Dto.Controller.PortalSearchDto;
+import com.gradu.infou.Domain.Dto.Service.PortalResponseDto;
 import com.gradu.infou.Domain.Entity.PortalProfessor;
 import com.gradu.infou.Service.PortalService;
 import jakarta.validation.Valid;
@@ -20,8 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @Slf4j
-@Validated
-@RequestMapping("/v1/api")
+@RequestMapping("/v1/api/portals")
 @RestController
 @RequiredArgsConstructor
 public class PortalController {
@@ -29,20 +29,16 @@ public class PortalController {
     private final PortalService portalService;
 
     @GetMapping("/search")
-    public BaseResponse<PortalSearchDto> PortalSearch(@RequestParam("major") @NotBlank String major, @RequestParam("keyword") @NotBlank String keyword, @RequestParam("condition") Condition condition) {
+    public BaseResponse<List<PortalResponseDto>> PortalSearch(@RequestParam("major") String major, @RequestParam("keyword") String keyword, @RequestParam("condition") Condition condition) {
 
-        List<PortalProfessor> res = null;
+        List<PortalResponseDto> res = null;
 
         if (condition.equals(Condition.name)) {
             res = portalService.searchByLectureName(major, keyword);
         } else if (condition.equals(Condition.professor)) {
             res = portalService.searchByProfessorName(major, keyword);
-
         }
 
-        PortalSearchDto portalSearchDto = new PortalSearchDto(res);
-        //log.error(res.toString());
-
-        return new BaseResponse < PortalSearchDto> (portalSearchDto);
+        return new BaseResponse < List<PortalResponseDto>> (res);
     }
 }
