@@ -1,0 +1,87 @@
+package com.gradu.infou.Config;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public enum BaseResponseStatus {
+    /**
+     * 1000 : 요청 성공
+     */
+    SUCCESS(true, 1000, "요청에 성공하였습니다."),
+
+
+    /**
+     * 2000 : Request 오류
+     */
+    // Common
+    REQUEST_ERROR(false, 2000, "입력값을 확인해주세요."),
+    EMPTY_JWT(false, 2001, "JWT를 입력해주세요."),
+    INVALID_JWT(false, 2002, "유효하지 않은 JWT입니다."),
+    EXPIRED_JWT(false, 2003, "만료된 토큰입니다."),
+    MALFORMED_JWT(false, 2004, "변조된 토큰입니다."),
+
+    INVALID_USER_JWT(false,2003,"권한이 없는 유저의 접근입니다."),
+
+    // users
+    USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),
+    USERS_EMPTY_PASSWORD(false, 2011, "유저 비밀번호 값을 확인해주세요."),
+
+    CALENDAR_NOT_FOUND(false, 2012, "해당하는 달력을 찾을 수 없습니다."),
+
+    MY_ROUTINE_NOT_FOUND(false, 2012, "해당하는 내 루틴을 찾을 수 없습니다."),
+
+    // [POST] /users
+    POST_USERS_EMPTY_EMAIL(false, 2015, "이메일을 입력해주세요."),
+    POST_USERS_INVALID_EMAIL(false, 2016, "이메일 형식을 확인해주세요."),
+    POST_USERS_EXISTS_EMAIL(false,2017,"중복된 이메일입니다."),
+
+    // [POST] /boards
+    POST_BOARDS_EMPTY_TITLE(false, 2018, "제목은 두 글자 이상으로 작성해주세요."),
+
+
+    // portals
+    NOT_FOUND_PORTAL_FROM_LECTURE_NAME(false, 2019, "입력한 강의명으로 강의를 찾을 수 없습니다."),
+    NOT_FOUND_PORTAL_FROM_PROFESSOR_NAME(false, 2020, "입력한 교수명으로 강의를 찾을 수 없습니다."),
+    NOT_FOUND_PROFESSOR_FROM_PORTAL(false, 2021, "입력한 강의로 교수를 찾을 수 없습니다."),
+
+
+    // Enum
+    CONDITION_INVALID(false, 2100, "condition이 유효하지 않습니다.(name or professor)"),
+    REQUEST_BLANK(false, 2101, "request 값에 필수 값이 없습니다."),
+
+
+
+    /**
+     * 3000 : Response 오류
+     */
+    // Common
+    RESPONSE_ERROR(false, 3000, "값을 불러오는데 실패하였습니다."),
+
+    // [POST] /users
+    DUPLICATED_EMAIL(false, 3013, "중복된 이메일입니다."),
+    FAILED_TO_LOGIN(false,3014,"없는 아이디거나 비밀번호가 틀렸습니다."),
+
+
+
+    /**
+     * 4000 : Database, Server 오류
+     */
+    DATABASE_ERROR(false, 4000, "데이터베이스 연결에 실패하였습니다."),
+    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),
+
+    //[PATCH] /users/{userIdx}
+    MODIFY_FAIL_USERNAME(false,4014,"유저네임 수정 실패"),
+
+    //[PATCH] /users/{boardIdx}
+    MODIFY_FAIL_BOARDTITLE(false, 4015, "게시글 제목 수정 실패"),
+
+    PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
+    PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");
+
+
+    private final boolean isSuccess;
+    private final int code;
+    private final String message;
+}
