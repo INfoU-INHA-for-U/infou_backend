@@ -1,4 +1,5 @@
 package com.gradu.infou.Domain.Dto.Controller;
 
-public class PortalDto {
+public enum Condition {
+    name, professor
 }

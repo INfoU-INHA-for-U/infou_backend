@@ -18,10 +18,12 @@ public interface PortalProfessorRepository extends JpaRepository<PortalProfessor
     @Query("select pp from PortalProfessor pp join fetch pp.portal p join fetch pp.professor pr where p.department = :major and pr.name = :professorName")
     Optional<List<PortalProfessor>> findByProfessorName(String major, String professorName);
 
+
     @Query(value = "select pp from PortalProfessor pp join fetch pp.portal p join fetch pp.professor pr where p.department = :department order by p.option_5 desc, p.option_4 desc, p.option_3 desc, p.option_2 desc, p.option_1 desc"
             , countQuery = "select count(pp) from PortalProfessor pp join pp.portal p where p.department = :department"
     )
     Slice<PortalProfessor> findSliceByDepartment(String department,Pageable pageable);
 
     Optional<List<PortalProfessor>> findByPortal(Portal p);
+
 }
