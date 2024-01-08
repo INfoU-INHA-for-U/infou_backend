@@ -2,12 +2,12 @@ package com.gradu.infou.Service;
 
 import com.gradu.infou.Config.BaseResponseStatus;
 import com.gradu.infou.Config.exception.BaseException;
+import com.gradu.infou.Domain.Dto.Controller.SearchCondition;
 import com.gradu.infou.Domain.Dto.Service.PortalResponseDto;
 import com.gradu.infou.Domain.Entity.Portal;
 import com.gradu.infou.Domain.Entity.PortalProfessor;
-import com.gradu.infou.Domain.Entity.Professor;
 import com.gradu.infou.Repository.PortalProfessorRepository;
-import com.gradu.infou.Repository.PortalRepository;
+import com.gradu.infou.Repository.portal.PortalRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -44,8 +44,7 @@ public class PortalService {
                 .toList();
     }
 
-    public Slice<PortalProfessor> searchByDepartment(String department, Pageable pageable) {
-        //TODO 페이징 문제.. 우선 Portal을 페이징 조회하고 나서 교수 목록을 뽑아오는 형식으로 진행 -> N + 1 조심
-        return portalProfessorRepository.findSliceByDepartment(department, pageable);
+    public Slice<PortalResponseDto> searchSliceByCondition(SearchCondition condition, Pageable pageable) {
+        return portalRepository.findSliceByCondition(condition, pageable);
     }
 }

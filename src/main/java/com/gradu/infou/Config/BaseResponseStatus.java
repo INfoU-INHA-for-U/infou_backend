@@ -40,9 +40,17 @@ public enum BaseResponseStatus {
     // [POST] /boards
     POST_BOARDS_EMPTY_TITLE(false, 2018, "제목은 두 글자 이상으로 작성해주세요."),
 
+
+    // portals
     NOT_FOUND_PORTAL_FROM_LECTURE_NAME(false, 2019, "입력한 강의명으로 강의를 찾을 수 없습니다."),
     NOT_FOUND_PORTAL_FROM_PROFESSOR_NAME(false, 2020, "입력한 교수명으로 강의를 찾을 수 없습니다."),
     NOT_FOUND_PROFESSOR_FROM_PORTAL(false, 2021, "입력한 강의로 교수를 찾을 수 없습니다."),
+
+
+    // Enum
+    CONDITION_INVALID(false, 2100, "condition이 유효하지 않습니다.(name or professor)"),
+    REQUEST_BLANK(false, 2101, "request 값에 필수 값이 없습니다."),
+
 
 
     /**

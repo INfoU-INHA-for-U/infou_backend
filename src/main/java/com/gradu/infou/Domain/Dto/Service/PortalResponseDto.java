@@ -2,6 +2,7 @@ package com.gradu.infou.Domain.Dto.Service;
 
 import com.gradu.infou.Domain.Entity.Portal;
 import com.gradu.infou.Domain.Entity.Professor;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -61,6 +62,28 @@ public class PortalResponseDto {
         this.option_4 = option_4;
         this.option_5 = option_5;
         this.detail_uk = detailUk;
+    }
+
+    @QueryProjection
+    public PortalResponseDto(Portal portal) {
+        this.lecture_name = portal.getLectureName();
+        this.department = portal.getDepartment();
+        this.academic_number = portal.getAcademicNumber();
+        this.survey_cnt = portal.getSurveyCnt();
+        this.total_cnt = portal.getTotalCnt();
+        this.semester = portal.getSemester();
+        this.option_1 = portal.getOption_1();
+        this.option_2 = portal.getOption_2();
+        this.option_3 = portal.getOption_3();
+        this.option_4 = portal.getOption_4();
+        this.option_5 = portal.getOption_5();
+        this.detail_uk = portal.getDetailUk();
+
+        portal.getPortalProfessors().forEach( portalProfessor -> {
+            Professor professor = portalProfessor.getProfessor();
+            ProfessorResponseDto professorResponseDto = ProfessorResponseDto.fromEntity(professor);
+            this.professors.add(professorResponseDto);
+        });
     }
 
     public static PortalResponseDto fromEntity(Portal portal){

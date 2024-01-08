@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.lang3.builder.ToStringExclude;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,7 @@ public class Portal extends BaseTimeEntity {
     private Long detailUk;
 
     @ToStringExclude
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "portal", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<PortalProfessor> portalProfessors = new ArrayList<>();
 
