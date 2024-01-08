@@ -1,5 +1,6 @@
 package com.gradu.infou.Service;
 
+import com.gradu.infou.Domain.Dto.Controller.SearchCondition;
 import com.gradu.infou.Domain.Dto.Service.PortalResponseDto;
 import com.gradu.infou.Domain.Entity.PortalProfessor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,13 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
+@Transactional
 class PortalServiceTest {
 
     @Autowired
@@ -52,32 +56,19 @@ class PortalServiceTest {
     }
 
     @Test
-    void searchByDepartment() {
+    void searchSliceByCondition() {
         // given
-        String department = "컴퓨터공학과";
+        String major = null;
+        List<String> lectureNames = new ArrayList<>();//List.of("자료구조", "객체지향프로그래밍 1", "생명과학");
+        SearchCondition searchCondition = new SearchCondition(major, lectureNames);
+
         PageRequest pageRequest = PageRequest.of(0, 10);
 
         // when
-        Slice<PortalProfessor> portalProfessors = portalService.searchByDepartment(department, pageRequest);
-        log.info("portalProfessors={}", portalProfessors);
-        log.info("portalProfessors.getContent()={}", portalProfessors.getContent());
-        portalProfessors.getContent()
-                        .forEach(portalProfessor -> {
-                            log.info("portalProfessor={}", portalProfessor);
-                            log.info("portalProfessor.getPortal().getId()={}", portalProfessor.getPortal().getId());
-                            log.info("portalProfessor.getPortal().getLectureName()={}", portalProfessor.getPortal().getLectureName());
-                            log.info("portalProfessor.getProfessor().getName()={}", portalProfessor.getProfessor().getName());
-                        });
-        log.info("portal.isFirst={}", portalProfessors.isFirst());
-        log.info("portal.isLast={}", portalProfessors.isLast());
-        log.info("portal.hasNext={}", portalProfessors.hasNext());
-        log.info("portal.hasPrevious={}", portalProfessors.hasPrevious());
-        log.info("portal.nextPageable={}", portalProfessors.nextPageable());
-        log.info("portal.previousPageable={}", portalProfessors.previousPageable());
-        log.info("portal.getNumber={}", portalProfessors.getNumber());
-        log.info("portal.getNumberOfElements={}", portalProfessors.getNumberOfElements());
-        log.info("portal.getSize={}", portalProfessors.getSize());
-
+        Slice<PortalResponseDto> portalResponseDtos = portalService.searchSliceByCondition(searchCondition, pageRequest);
+        portalResponseDtos.forEach(portalResponseDto -> {
+            log.info("portalResponseDto={}", portalResponseDto);
+        });
 
         // then
     }
