@@ -13,11 +13,11 @@ content
 
 :star:**상세 내용**
 ---
-content
+- content
 
 :white_check_mark:**체크리스트**
 ---
-content
+- [ ] content
 
 :mag_right:**레퍼런스**
 ---
