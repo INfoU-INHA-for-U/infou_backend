@@ -1,18 +1,18 @@
 package com.gradu.infou.Controller;
 
 import com.gradu.infou.Config.BaseResponse;
+import com.gradu.infou.Config.BaseResponseStatus;
 import com.gradu.infou.Config.exception.BaseException;
 import com.gradu.infou.Domain.Dto.Controller.Condition;
-import com.gradu.infou.Domain.Dto.Controller.PortalSearchDto;
+import com.gradu.infou.Domain.Dto.Controller.SearchCondition;
 import com.gradu.infou.Domain.Dto.Service.PortalResponseDto;
-import com.gradu.infou.Domain.Entity.PortalProfessor;
 import com.gradu.infou.Service.PortalService;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import lombok.NoArgsConstructor;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,5 +40,17 @@ public class PortalController {
         }
 
         return new BaseResponse < List<PortalResponseDto>> (res);
+    }
+
+    @GetMapping("/total")
+    public BaseResponse<Slice<PortalResponseDto>> PortalTotal(@Nullable SearchCondition searchCondition, @Nullable Pageable pageable){ //page default가 size=10, page=0이기 때문에, 따로 설정 안함. 할 경우, @PageableDefault(size=10, page=0), 이런 식으로 작성
+
+        if(pageable.getPageSize()>100){
+            throw new BaseException(BaseResponseStatus.SIZE_TOO_BIG);
+        }
+
+        Slice<PortalResponseDto> res = portalService.searchSliceByCondition(searchCondition, pageable);
+
+        return new BaseResponse<Slice<PortalResponseDto>>(res);
     }
 }
