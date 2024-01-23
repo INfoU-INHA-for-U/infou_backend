@@ -8,7 +8,7 @@ import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 @Configuration
-@EnableElasticsearchRepositories(basePackageClasses = {ElasticSearchItemsRepository.class}) // elasticsearch repository 허용
+@EnableElasticsearchRepositories // elasticsearch repository 허용
 public class ElasticSearchConfig extends AbstractElasticsearchConfiguration {
 
     @Override
