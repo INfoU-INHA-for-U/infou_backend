@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class PortalRepositoryImpl implements PortalRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<PortalResponseDto> findSliceByCondition(SearchCondition condition, Pageable pageable) {
+    public Slice<PortalResponseDto> findSliceByCondition(@RequestParam(required = true) SearchCondition condition, @RequestParam(required = false) Pageable pageable) {
         List<Portal> portals = queryFactory
                 .selectFrom(portal)
                 .where(

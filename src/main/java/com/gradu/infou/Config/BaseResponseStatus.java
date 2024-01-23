@@ -51,6 +51,9 @@ public enum BaseResponseStatus {
     CONDITION_INVALID(false, 2100, "condition이 유효하지 않습니다.(name or professor)"),
     REQUEST_BLANK(false, 2101, "request 값에 필수 값이 없습니다."),
 
+    //Page
+    SIZE_TOO_BIG(false, 2102,"page의 size 값이 너무 큽니다."),
+
 
 
     /**
