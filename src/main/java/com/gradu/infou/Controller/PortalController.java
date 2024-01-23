@@ -5,7 +5,9 @@ import com.gradu.infou.Config.BaseResponseStatus;
 import com.gradu.infou.Config.exception.BaseException;
 import com.gradu.infou.Domain.Dto.Controller.Condition;
 import com.gradu.infou.Domain.Dto.Controller.SearchCondition;
+import com.gradu.infou.Domain.Dto.Service.PortalDocumentResponseDto;
 import com.gradu.infou.Domain.Dto.Service.PortalResponseDto;
+import com.gradu.infou.Domain.Entity.PortalDocument;
 import com.gradu.infou.Service.PortalService;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
@@ -52,5 +54,13 @@ public class PortalController {
         Slice<PortalResponseDto> res = portalService.searchSliceByCondition(searchCondition, pageable);
 
         return new BaseResponse<Slice<PortalResponseDto>>(res);
+    }
+
+    @GetMapping("/detail")
+    public BaseResponse<PortalDocumentResponseDto> PortalDetail(@RequestParam("an") String academicNumber){
+
+        PortalDocumentResponseDto res = portalService.searchByAcademicNumber(academicNumber);
+
+        return new BaseResponse<PortalDocumentResponseDto>(res);
     }
 }
