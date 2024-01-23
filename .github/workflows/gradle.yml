@@ -28,14 +28,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    ## docker-compose.yml 파일 생성
-    - name: make docker-compose.yml
-      run: |
-        ## create docker-compose.yml
-        touch ./docker-compose.yml
-        echo "${{secrets.COMPOSE}}" >> ./docker-compose.yml
-      shell: bash
-
     ## create application.properties
     - name: make application.properties
       run: |
@@ -73,6 +65,9 @@ jobs:
         username: ubuntu
         key: ${{ secrets.KEY }}
         script: |
+          ## docker-compose.yml 파일 생성
+          touch ./docker-compose.yml
+          echo "${{secrets.COMPOSE}}" >> ./docker-compose.yml
           ## sudo docker rm -f $(sudo docker ps -qa)
           sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_REPO_WEB }}
           sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_REPO_NGINX }}
