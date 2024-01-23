@@ -18,5 +18,4 @@ public class ElasticSearchItems {
     private Long id;
     private String student;
     private String professor;
-
 }
