@@ -14,7 +14,7 @@ public class ElasticSearchConfig extends AbstractElasticsearchConfiguration {
     @Override
     public RestHighLevelClient elasticsearchClient() {
         ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-                .connectedTo("3.145.174.175:9200")
+                .connectedTo("13.59.25.190:9200")
                 .build();
         return RestClients.create(clientConfiguration).rest();
     }
