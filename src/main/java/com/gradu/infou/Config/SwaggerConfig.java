@@ -13,10 +13,17 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI(){
-        return new OpenAPI()
+        return new OpenAPI().addSecurityItem(new SecurityRequirement().addList("JWT"))
+                .components(new Components().addSecuritySchemes("JWT", createAPIKeyScheme()))
                 .info(new Info().title("INfoU API")
                         .description("This is INfoU API")
                         .version("v0.0.1"));
+    }
+
+    private SecurityScheme createAPIKeyScheme() {
+        return new SecurityScheme().type(SecurityScheme.Type.HTTP)
+                .bearerFormat("JWT")
+                .scheme("bearer");
     }
 
 }

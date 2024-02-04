@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @Slf4j
-@RequestMapping("/v1/api/portals")
+@RequestMapping("/api/v1/portals")
 @RestController
 @RequiredArgsConstructor
 public class PortalController {
