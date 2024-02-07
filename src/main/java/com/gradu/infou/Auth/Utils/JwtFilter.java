@@ -28,6 +28,11 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
 
+            if(request.getRequestURI().equals("/api/v1/auth/login")||request.getRequestURI().equals("/api/v1/auth/join")){
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             //Token 꺼내기
             String token = resolveToken(request);
 

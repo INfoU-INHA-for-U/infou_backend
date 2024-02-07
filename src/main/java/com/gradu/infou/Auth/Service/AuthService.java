@@ -9,11 +9,13 @@ import com.gradu.infou.Config.exception.BaseException;
 import com.gradu.infou.Domain.Entity.User;
 import com.gradu.infou.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import static com.gradu.infou.Config.BaseResponseStatus.USERS_NOT_FOUND;
 import static com.gradu.infou.Config.BaseResponseStatus.USER_ALREADY_EXIST;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AuthService {
@@ -54,6 +56,7 @@ public class AuthService {
 
         User user = userRepository.findByAuthId(loginReqDto.getAuthId()).
                 orElseThrow(() -> new BaseException(USERS_NOT_FOUND));
+
 
         return LoginResDto.fromEntity(createToken(user.getAuthId()));
     }
