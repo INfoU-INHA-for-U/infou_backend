@@ -1,11 +1,11 @@
 package com.gradu.infou.Domain.Entity;
 
-import com.gradu.infou.Domain.Entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter
@@ -24,5 +24,13 @@ public class User extends BaseTimeEntity {
     private String email;
     @Column(nullable = false)
     private String role;
+    @Column(nullable = false)
+    @ColumnDefault("0L")
+    private Long reward;
+
+    public void modifyReward(boolean status, Long value){
+        if(status==true) reward += value;
+        else reward -= value;
+    }
 
 }

@@ -34,7 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
             }
 
             //Token 꺼내기
-            String token = resolveToken(request);
+            String token = jwtUtil.resolveToken(request);
 
             //Token validation 여부
             if (token==null||!jwtUtil.validToken(token)) {
@@ -71,16 +71,5 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String resolveToken(HttpServletRequest request){
 
-        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        // token 안 보내면 Block
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            return null;
-        }
-
-        //Token 꺼내기
-        return authorization.split(" ")[1];
-    }
 }

@@ -1,8 +1,10 @@
 package com.gradu.infou.Auth.Utils;
 
 import io.jsonwebtoken.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import java.security.SignatureException;
@@ -43,4 +45,19 @@ public class JwtUtil {
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
+
+    public String resolveToken(HttpServletRequest request){
+
+        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        // token 안 보내면 Block
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return null;
+        }
+
+        //Token 꺼내기
+        return authorization.split(" ")[1];
+    }
+
+
 }
