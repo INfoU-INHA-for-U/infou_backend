@@ -80,7 +80,7 @@ jobs:
         application_name: INfoU_dev
         environment_name: INfoUdev-env
         version_label: github-action-${{ steps.current-time.outputs.formattedTime }}
-        region: ap-northeast-2
+        region: us-east-2
         deployment_package: ./docker-compose.yml
         wait_for_deployment: false
 
