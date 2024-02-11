@@ -40,6 +40,12 @@ jobs:
         # GitHub-Actions 에서 설정한 값을 application-database.yaml 파일에 쓰기
         echo "${{ secrets.DATABASE }}" >> ./application.properties
       shell: bash
+
+    ## docker-compose.yml 파일 생성
+    - name: make docker-compose.yml
+      run: |
+        touch ./docker-compose.yml
+        echo "${{secrets.COMPOSE}}" > ./docker-compose.yml
     
     ## Grant execute permission for gradlew
     - name: Grant execute permission for gradlew
@@ -57,19 +63,40 @@ jobs:
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_REPO_WEB }} .
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_REPO_WEB }}
 
-    ## docker compose up
-    - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@master
+    ## timestamp
+    - name: Get current time
+      uses: 1466587594/get-current-time@v2
+      id: current-time
       with:
-        host: ${{ secrets.HOST }}
-        username: ubuntu
-        key: ${{ secrets.KEY }}
-        script: |
-          ## docker-compose.yml 파일 생성
-          touch ./docker-compose.yml
-          echo "${{secrets.COMPOSE}}" > ./docker-compose.yml
-          ## sudo docker rm -f $(sudo docker ps -qa)
-          sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_REPO_WEB }}
-          sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_REPO_NGINX }}
-          sudo docker-compose up -d
-          sudo docker image prune -f
+        format: YYYYMMDD_HH-mm-ss
+        utcOffset: "+09:00"
+
+
+    - name: Beanstalk Deploy
+      uses: einaregilsson/beanstalk-deploy@v14
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: INfoU_dev
+        environment_name: INfoUdev-env
+        version_label: github-action-${{ steps.current-time.outputs.formattedTime }}
+        region: ap-northeast-2
+        deployment_package: ./docker-compose.yml
+        wait_for_deployment: false
+
+    # ## docker compose up
+    # - name: executing remote ssh commands using password
+    #   uses: appleboy/ssh-action@master
+    #   with:
+    #     host: ${{ secrets.HOST }}
+    #     username: ubuntu
+    #     key: ${{ secrets.KEY }}
+    #     script: |
+    #       ## docker-compose.yml 파일 생성
+    #       touch ./docker-compose.yml
+    #       echo "${{secrets.COMPOSE}}" > ./docker-compose.yml
+    #       ## sudo docker rm -f $(sudo docker ps -qa)
+    #       sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_REPO_WEB }}
+    #       sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_REPO_NGINX }}
+    #       sudo docker-compose up -d
+    #       sudo docker image prune -f
