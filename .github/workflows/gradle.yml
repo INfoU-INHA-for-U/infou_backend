@@ -11,8 +11,16 @@ on:
   push:
     branches: [ "develop" ]
 
-permissions:
-  contents: read
+# permissions:
+#   contents: read
+
+env:
+  JAVA_VERSION: '17'
+  JAVA_DISTRIBUTION: 'temurin'
+  AWS_REGION: us-east-2
+  EB_APPLICATION_NAME: INfoU_dev
+  EB_ENVIRONMENT_NAME: INfoUdev-env
+  EB_DEPLOYMENT_PACKAGE: ./docker-compose.yml
 
 jobs:
   build:
@@ -25,8 +33,8 @@ jobs:
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
-        distribution: 'temurin'
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: ${{ env.JAVA_DISTRIBUTION }}
 
     ## create application.properties
     - name: make application.properties
@@ -45,7 +53,7 @@ jobs:
     - name: make docker-compose.yml
       run: |
         touch ./docker-compose.yml
-        echo "${{secrets.COMPOSE}}" > ./docker-compose.yml
+        echo "${{secrets.COMPOSE}}" > "${{ env.EB_DEPLOYMENT_PACKAGE }}"
     
     ## Grant execute permission for gradlew
     - name: Grant execute permission for gradlew
@@ -73,15 +81,15 @@ jobs:
 
 
     - name: Beanstalk Deploy
-      uses: einaregilsson/beanstalk-deploy@v14
+      uses: einaregilsson/beanstalk-deploy@v20
       with:
         aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        application_name: INfoU_dev
-        environment_name: INfoUdev-env
+        application_name: ${{ env.EB_APPLICATION_NAME }}
+        environment_name: ${{ env.EB_ENVIRONMENT_NAME }}
         version_label: github-action-${{ steps.current-time.outputs.formattedTime }}
-        region: us-east-2
-        deployment_package: ./docker-compose.yml
+        region: ${{ env.AWS_REGION }}
+        deployment_package: ${{ env.EB_DEPLOYMENT_PACKAGE }}
         wait_for_deployment: false
 
     # ## docker compose up
