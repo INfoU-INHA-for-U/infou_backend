@@ -30,16 +30,14 @@ public class AuthService {
     private final Long refreshTokenExpiredAtMs=1000*60*60*24*14L; //2주
 
 
-    public boolean isPresentUser(String clientId) {
-        userRepository.findByAuthId(clientId).ifPresent(user -> {
-            throw new BaseException(USER_ALREADY_EXIST);
-        });
-        return true;
-    }
-
     public TokenResDto join(JoinReqDto joinReqDto){
 
         isPresentUser(joinReqDto.getAuthId());
+
+        //인하대 메일인지 확인
+        if(!validEmail(joinReqDto.getEmail())){
+            throw new BaseException(INVALID_EMAIL);
+        }
 
         User newUser = joinReqDto.toUserEntity();
         User saveUser = userRepository.save(newUser);
@@ -93,6 +91,18 @@ public class AuthService {
         redisService.setValues(id, refreshToken, Duration.ofMillis(refreshTokenExpiredAtMs));
 
         return TokenResDto.fromEntity(accessToken, refreshToken);
+    }
+
+    private boolean isPresentUser(String clientId) {
+        userRepository.findByAuthId(clientId).ifPresent(user -> {
+            throw new BaseException(USER_ALREADY_EXIST);
+        });
+        return true;
+    }
+
+    private boolean validEmail(String email){
+        String domain = email.substring(email.indexOf("@") + 1);
+        return domain.equals("inha.edu") || domain.equals("inha.ac.kr");
     }
 
 }
