@@ -1,6 +1,7 @@
 package com.gradu.infou.Config;
 
 import com.gradu.infou.Auth.Utils.JwtFilter;
+import com.gradu.infou.Config.exception.FailedAuthenticationEntryPoint;
 import com.gradu.infou.Domain.Entity.Enum.Role;
 import com.gradu.infou.Service.LoginService;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +61,11 @@ public class SecurityConfig{
                 .requestMatchers("/api/v1/user/**").hasRole(Role.USER.name())
                 .requestMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.name())
                 .anyRequest().authenticated(); //나머지 uri은 인증만
+
+        //authorizeRequests에서 발생한 Exception 처리
+        http.exceptionHandling(exceptionHandling-> exceptionHandling
+                .authenticationEntryPoint(new FailedAuthenticationEntryPoint())
+        );
 
         //filter 적용
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
