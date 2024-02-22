@@ -1,19 +1,21 @@
 package com.gradu.infou.Auth.Service;
 
-import com.gradu.infou.Auth.Dto.JoinReqDto;
-import com.gradu.infou.Auth.Dto.JoinResDto;
-import com.gradu.infou.Auth.Dto.LoginReqDto;
-import com.gradu.infou.Auth.Dto.LoginResDto;
+import com.gradu.infou.Auth.Dto.*;
 import com.gradu.infou.Auth.Utils.JwtUtil;
 import com.gradu.infou.Config.exception.BaseException;
 import com.gradu.infou.Domain.Entity.User;
 import com.gradu.infou.Repository.UserRepository;
+import com.gradu.infou.Service.RedisService;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import static com.gradu.infou.Config.BaseResponseStatus.USERS_NOT_FOUND;
-import static com.gradu.infou.Config.BaseResponseStatus.USER_ALREADY_EXIST;
+import java.time.Duration;
+
+import static com.gradu.infou.Config.BaseResponseStatus.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,15 +24,10 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final RedisService redisService;
 
-    //1000*60*60L;
-    private final Long expiredAtMs=1000*60*60L;
-
-
-    public String createToken(String userName){
-        //인증 과정 필요(userName과 password를 사용한 인증 구현 필요)
-        return jwtUtil.createJwt(userName, expiredAtMs);
-    }
+    private final Long accessTokenExpiredAtMs=1000*60*60L; //1시간
+    private final Long refreshTokenExpiredAtMs=1000*60*60*24*14L; //2주
 
 
     public boolean isPresentUser(String clientId) {
@@ -40,25 +37,62 @@ public class AuthService {
         return true;
     }
 
-    public JoinResDto join(JoinReqDto joinReqDto){
+    public TokenResDto join(JoinReqDto joinReqDto){
 
         isPresentUser(joinReqDto.getAuthId());
 
         User newUser = joinReqDto.toUserEntity();
-        userRepository.save(newUser);
+        User saveUser = userRepository.save(newUser);
 
-        String token=createToken(newUser.getAuthId());
+        String accessToken=jwtUtil.createJwt(saveUser.getId(), accessTokenExpiredAtMs);
+        String refreshToken=jwtUtil.createJwt(saveUser.getId(), refreshTokenExpiredAtMs);
 
-        return JoinResDto.fromEntity(token);
+        //redis에 저장
+        redisService.setValues(saveUser.getId().toString(),refreshToken, Duration.ofMillis(refreshTokenExpiredAtMs));
+
+        return TokenResDto.fromEntity(accessToken, refreshToken);
     }
 
-    public LoginResDto login(LoginReqDto loginReqDto){
+    public TokenResDto login(LoginReqDto loginReqDto){
 
         User user = userRepository.findByAuthId(loginReqDto.getAuthId()).
                 orElseThrow(() -> new BaseException(USERS_NOT_FOUND));
 
+        String accessToken = jwtUtil.createJwt(user.getId(), accessTokenExpiredAtMs);
+        String refreshToken = jwtUtil.createJwt(user.getId(), refreshTokenExpiredAtMs);
 
-        return LoginResDto.fromEntity(createToken(user.getAuthId()));
+        //redis에 저장
+        redisService.setValues(user.getId().toString(),refreshToken, Duration.ofMillis(refreshTokenExpiredAtMs));
+
+        return TokenResDto.fromEntity(accessToken, refreshToken);
+    }
+
+    public TokenResDto refreshToken(HttpServletRequest request, HttpServletResponse response){
+        //refresh token이 유효한지 확인
+        String token = jwtUtil.resolveToken(request);
+
+        if(token==null||!jwtUtil.validToken(token)){
+            throw new BaseException(INVALID_JWT);
+        }
+
+        String id = jwtUtil.getId(token);
+        Long idL = Long.parseLong(id);
+
+        //redis에 refresh token이 있는가?
+        String redisRefresh = redisService.getValues(id);
+        if(redisRefresh=="false"||!redisRefresh.equals(token)){ //없거나 refresh token 값이 일치하지 않는 경우
+            //탈취됐다고 간주, redis에 user id와 관련된 토큰 삭제
+            redisService.deleteKey(id);
+            throw new BaseException(INVALID_REFRESH);
+        }
+
+        String accessToken = jwtUtil.createJwt(idL, accessTokenExpiredAtMs);
+        String refreshToken = jwtUtil.createJwt(idL, refreshTokenExpiredAtMs);
+
+        //redis에 새로운 refresh token 갱신
+        redisService.setValues(id, refreshToken, Duration.ofMillis(refreshTokenExpiredAtMs));
+
+        return TokenResDto.fromEntity(accessToken, refreshToken);
     }
 
 }

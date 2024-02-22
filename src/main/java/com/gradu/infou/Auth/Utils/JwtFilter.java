@@ -28,13 +28,13 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
 
-            if(request.getRequestURI().equals("/api/v1/auth/login")||request.getRequestURI().equals("/api/v1/auth/join")){
+            if(request.getRequestURI().equals("/api/v1/auth/login")||request.getRequestURI().equals("/api/v1/auth/join")||request.getRequestURI().equals("/api/v1/auth/refresh-token")){
                 filterChain.doFilter(request, response);
                 return;
             }
 
             //Token 꺼내기
-            String token = resolveToken(request);
+            String token = jwtUtil.resolveToken(request);
 
             //Token validation 여부
             if (token==null||!jwtUtil.validToken(token)) {
@@ -43,7 +43,8 @@ public class JwtFilter extends OncePerRequestFilter {
             }
 
             //UserName Token에서 꺼내기
-            String userName = jwtUtil.getClientId(token);
+            String userName = jwtUtil.getId(token);
+            log.info("user: ", userName);
 
             // 토큰이 유효하고 만료되지 않았다면 SecurityContext에 인증 정보를 저장
             // 토큰이 만료되지 않았는지는 JwtService에서 확인
@@ -69,18 +70,5 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-    }
-
-    private String resolveToken(HttpServletRequest request){
-
-        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-
-        // token 안 보내면 Block
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            return null;
-        }
-
-        //Token 꺼내기
-        return authorization.split(" ")[1];
     }
 }

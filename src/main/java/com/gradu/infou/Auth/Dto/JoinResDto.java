@@ -10,11 +10,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 public class JoinResDto {
-    private String token;
+    private String accessToken;
+    private String refreshToken;
 
-    public static JoinResDto fromEntity(String token){
+    public static JoinResDto fromEntity(String accessToken, String refreshToken){
         return JoinResDto.builder()
-                .token(token)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 }

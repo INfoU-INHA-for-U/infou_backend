@@ -23,6 +23,7 @@ public enum BaseResponseStatus {
     MALFORMED_JWT(false, 2004, "변조된 토큰입니다."),
 
     INVALID_USER_JWT(false,2003,"권한이 없는 유저의 접근입니다."),
+    INVALID_REFRESH(false,2004,"refresh token이 탈취당했을 수 있습니다. 로그인을 다시 해주세요."),
 
     // users
     USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),

@@ -1,17 +1,13 @@
 package com.gradu.infou.Auth.Controller;
 
-import com.gradu.infou.Auth.Dto.JoinReqDto;
-import com.gradu.infou.Auth.Dto.JoinResDto;
-import com.gradu.infou.Auth.Dto.LoginReqDto;
-import com.gradu.infou.Auth.Dto.LoginResDto;
+import com.gradu.infou.Auth.Dto.*;
 import com.gradu.infou.Auth.Service.AuthService;
 import com.gradu.infou.Config.BaseResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,15 +15,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthService authService;
     @PostMapping("/join")
-    private BaseResponse<JoinResDto> join(@RequestBody JoinReqDto joinReqDto){
-
-        JoinResDto resDto = authService.join(joinReqDto);
-
-        return new BaseResponse<>(resDto);
+    private BaseResponse<TokenResDto> join(@RequestBody JoinReqDto joinReqDto){
+        return new BaseResponse<>(authService.join(joinReqDto));
     }
 
     @PostMapping("/login")
-    private BaseResponse<LoginResDto> login(@RequestBody LoginReqDto loginReqDto){
+    private BaseResponse<TokenResDto> login(@RequestBody LoginReqDto loginReqDto){
         return new BaseResponse<>(authService.login(loginReqDto));
     }
+
+    @PostMapping("/refresh-token")
+    private BaseResponse<TokenResDto> refreshToken(HttpServletRequest req, HttpServletResponse res){
+        return new BaseResponse<>(authService.refreshToken(req, res));
+    }
+
+
 }
