@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,11 +24,13 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+    @Value("${jwt.secret.access}")
+    private String secretAccessKey;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-
+            log.info("request.getRequestURI(): {}", request.getRequestURI());
             if(request.getRequestURI().equals("/api/v1/auth/login")||request.getRequestURI().equals("/api/v1/auth/join")||request.getRequestURI().equals("/api/v1/auth/refresh-token")){
                 filterChain.doFilter(request, response);
                 return;
@@ -37,13 +40,13 @@ public class JwtFilter extends OncePerRequestFilter {
             String token = jwtUtil.resolveToken(request);
 
             //Token validation 여부
-            if (token==null||!jwtUtil.validToken(token)) {
+            if (token==null||!jwtUtil.validToken(token, secretAccessKey)) {
                 filterChain.doFilter(request, response);
                 return;
             }
 
             //UserName Token에서 꺼내기
-            String userName = jwtUtil.getId(token);
+            String userName = jwtUtil.getId(token, secretAccessKey);
             log.info("user: ", userName);
 
             // 토큰이 유효하고 만료되지 않았다면 SecurityContext에 인증 정보를 저장

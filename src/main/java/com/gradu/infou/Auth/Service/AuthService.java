@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -29,6 +30,11 @@ public class AuthService {
     private final Long accessTokenExpiredAtMs=1000*60*60L; //1시간
     private final Long refreshTokenExpiredAtMs=1000*60*60*24*14L; //2주
 
+    @Value("${jwt.secret.access}")
+    private String secretAccessKey;
+    @Value("${jwt.secret.refresh}")
+    private String secretRefreshKey;
+
 
     public TokenResDto join(JoinReqDto joinReqDto){
 
@@ -42,8 +48,8 @@ public class AuthService {
         User newUser = joinReqDto.toUserEntity();
         User saveUser = userRepository.save(newUser);
 
-        String accessToken=jwtUtil.createJwt(saveUser.getId(), accessTokenExpiredAtMs);
-        String refreshToken=jwtUtil.createJwt(saveUser.getId(), refreshTokenExpiredAtMs);
+        String accessToken=jwtUtil.createJwt(saveUser.getId(), accessTokenExpiredAtMs, secretAccessKey);
+        String refreshToken=jwtUtil.createJwt(saveUser.getId(), refreshTokenExpiredAtMs, secretRefreshKey);
 
         //redis에 저장
         redisService.setValues(saveUser.getId().toString(),refreshToken, Duration.ofMillis(refreshTokenExpiredAtMs));
@@ -56,8 +62,8 @@ public class AuthService {
         User user = userRepository.findByAuthId(loginReqDto.getAuthId()).
                 orElseThrow(() -> new BaseException(USERS_NOT_FOUND));
 
-        String accessToken = jwtUtil.createJwt(user.getId(), accessTokenExpiredAtMs);
-        String refreshToken = jwtUtil.createJwt(user.getId(), refreshTokenExpiredAtMs);
+        String accessToken = jwtUtil.createJwt(user.getId(), accessTokenExpiredAtMs, secretAccessKey);
+        String refreshToken = jwtUtil.createJwt(user.getId(), refreshTokenExpiredAtMs,secretRefreshKey);
 
         //redis에 저장
         redisService.setValues(user.getId().toString(),refreshToken, Duration.ofMillis(refreshTokenExpiredAtMs));
@@ -69,11 +75,11 @@ public class AuthService {
         //refresh token이 유효한지 확인
         String token = jwtUtil.resolveToken(request);
 
-        if(token==null||!jwtUtil.validToken(token)){
+        if(token==null||!jwtUtil.validToken(token, secretRefreshKey)){
             throw new BaseException(INVALID_JWT);
         }
 
-        String id = jwtUtil.getId(token);
+        String id = jwtUtil.getId(token, secretRefreshKey);
         Long idL = Long.parseLong(id);
 
         //redis에 refresh token이 있는가?
@@ -84,8 +90,8 @@ public class AuthService {
             throw new BaseException(INVALID_REFRESH);
         }
 
-        String accessToken = jwtUtil.createJwt(idL, accessTokenExpiredAtMs);
-        String refreshToken = jwtUtil.createJwt(idL, refreshTokenExpiredAtMs);
+        String accessToken = jwtUtil.createJwt(idL, accessTokenExpiredAtMs, secretAccessKey);
+        String refreshToken = jwtUtil.createJwt(idL, refreshTokenExpiredAtMs, secretRefreshKey);
 
         //redis에 새로운 refresh token 갱신
         redisService.setValues(id, refreshToken, Duration.ofMillis(refreshTokenExpiredAtMs));

@@ -7,21 +7,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
-import java.security.SignatureException;
 import java.util.Date;
 
 @Slf4j
 @Component
 public class JwtUtil {
-    @Value("${jwt.secret}")
-    private String secretKey;
 
-    public String getId(String token){
+    public String getId(String token, String secretKey){
         return Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().get("id", String.class);
     }
 
 
-    public boolean validToken(String token){
+    public boolean validToken(String token, String secretKey){
         try{
             Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getExpiration().before(new Date());
             return true;
@@ -34,11 +31,13 @@ public class JwtUtil {
             log.error("Unsupported JWT Token");
         } catch (IllegalArgumentException e){
             log.error("JWT claims string is empty");
+        } catch (SignatureException e){
+            log.error("Invalid Secret");
         }
         return false;
     }
 
-    public String createJwt(Long id, Long expiredMs){
+    public String createJwt(Long id, Long expiredMs, String secretKey){
         return Jwts.builder()
                 .claim("id", id.toString())
                 .issuedAt(new Date(System.currentTimeMillis()))
