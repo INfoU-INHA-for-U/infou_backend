@@ -1,24 +1,34 @@
 package com.gradu.infou.Config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gradu.infou.Auth.Service.AuthService;
 import com.gradu.infou.Auth.Utils.JwtFilter;
 import com.gradu.infou.Config.exception.FailedAuthenticationEntryPoint;
 import com.gradu.infou.Domain.Entity.Enum.Role;
-import com.gradu.infou.Service.LoginService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.io.IOException;
+import java.io.OutputStream;
+
+import static com.gradu.infou.Auth.Service.AuthService.outputStream;
+import static com.gradu.infou.Config.BaseResponseStatus.INVALID_JWT;
+import static com.gradu.infou.Config.BaseResponseStatus.SUCCESS;
 
 
 @Configuration
@@ -45,6 +55,7 @@ public class SecurityConfig{
             ,"/login/oauth2/code/kakao"
     };
     private final JwtFilter jwtFilter;
+    private final AuthService authService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
@@ -67,20 +78,19 @@ public class SecurityConfig{
                 .authenticationEntryPoint(new FailedAuthenticationEntryPoint())
         );
 
+        //logout
+        http.logout(logout -> logout.logoutUrl("/api/v1/auth/logout")
+                .addLogoutHandler((request, response, authentication) ->
+                        authService.logout(request, response)
+                )
+                .logoutSuccessHandler(((request, response, authentication) -> {
+                    SecurityContextHolder.clearContext();
+                    outputStream(response, SUCCESS);
+                }))
+        );
+
         //filter 적용
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
-//                http.oauth2Login((loginConfigure) ->
-//                        loginConfigure.loginPage("/login")
-//                                .userInfoEndpoint((userInfo) ->
-//                                        userInfo.userService(loginService)) //로그인 완료 후 회원 정보 받기
-//                                .defaultSuccessUrl("/") //OAuth 구글 로그인이 성공하면 이동할 uri 설정
-//                )
-//                .logout((logoutConfigurer) ->
-//                        logoutConfigurer.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-//                                .logoutSuccessUrl("/login")
-//                )
-//                .build();
 
         return http.build();
     }

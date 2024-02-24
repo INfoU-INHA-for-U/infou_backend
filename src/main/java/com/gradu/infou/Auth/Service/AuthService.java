@@ -1,7 +1,10 @@
 package com.gradu.infou.Auth.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gradu.infou.Auth.Dto.*;
 import com.gradu.infou.Auth.Utils.JwtUtil;
+import com.gradu.infou.Config.BaseResponse;
+import com.gradu.infou.Config.BaseResponseStatus;
 import com.gradu.infou.Config.exception.BaseException;
 import com.gradu.infou.Domain.Entity.User;
 import com.gradu.infou.Repository.UserRepository;
@@ -12,8 +15,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.time.Duration;
 
 import static com.gradu.infou.Config.BaseResponseStatus.*;
@@ -98,6 +107,42 @@ public class AuthService {
 
         return TokenResDto.fromEntity(accessToken, refreshToken);
     }
+
+    @Transactional
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+
+        log.info("111");
+
+        String token = jwtUtil.resolveToken(request);
+
+        if(token==null||!jwtUtil.validToken(token, secretAccessKey)){
+            outputStream(response, INVALID_JWT);
+            return;
+        }
+
+        String id = jwtUtil.getId(token, secretAccessKey);
+
+        //redis에 refresh token이 있는가?
+        String redisRefresh = redisService.getValues(id);
+        if(redisRefresh!="false"){ //refresh token이 저장되어 있는 경우, 삭제
+            redisService.deleteKey(id);
+        }
+
+    }
+
+    public static void outputStream(HttpServletResponse response, BaseResponseStatus status){
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+
+        try (OutputStream os = response.getOutputStream()) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.writeValue(os, new BaseResponse(status));
+            os.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private boolean isPresentUser(String clientId) {
         userRepository.findByAuthId(clientId).ifPresent(user -> {

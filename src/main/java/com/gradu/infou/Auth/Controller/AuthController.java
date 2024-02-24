@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     private final AuthService authService;
+
     @PostMapping("/join")
     private BaseResponse<TokenResDto> join(@RequestBody JoinReqDto joinReqDto){
         return new BaseResponse<>(authService.join(joinReqDto));
@@ -28,6 +30,5 @@ public class AuthController {
     private BaseResponse<TokenResDto> refreshToken(HttpServletRequest req, HttpServletResponse res){
         return new BaseResponse<>(authService.refreshToken(req, res));
     }
-
 
 }
