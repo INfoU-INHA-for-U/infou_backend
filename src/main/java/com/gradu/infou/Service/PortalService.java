@@ -5,12 +5,15 @@ import com.gradu.infou.Config.exception.BaseException;
 import com.gradu.infou.Domain.Dto.Controller.SearchCondition;
 //import com.gradu.infou.Domain.Dto.Service.PortalDetailDto;
 //import com.gradu.infou.Domain.Dto.Service.PortalDocumentResponseDto;
+import com.gradu.infou.Domain.Dto.Service.PortalDocumentResponseDto;
 import com.gradu.infou.Domain.Dto.Service.PortalResponseDto;
 import com.gradu.infou.Domain.Entity.Portal;
 //import com.gradu.infou.Domain.Entity.PortalDocument;
+import com.gradu.infou.Domain.Entity.PortalDocument;
 import com.gradu.infou.Domain.Entity.PortalProfessor;
 import com.gradu.infou.Repository.PortalProfessorRepository;
 //import com.gradu.infou.Repository.portal.PortalDocumentRepository;
+import com.gradu.infou.Repository.portal.PortalDocumentRepository;
 import com.gradu.infou.Repository.portal.PortalRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +35,7 @@ public class PortalService {
 
     private final PortalRepository portalRepository;
     private final PortalProfessorRepository portalProfessorRepository;
-    //private final PortalDocumentRepository portalDocumentRepository;
+    private final PortalDocumentRepository portalDocumentRepository;
 
     @Transactional(readOnly = true)
     public List<PortalResponseDto> searchByLectureName(String major, String lectureName) {
@@ -57,14 +60,14 @@ public class PortalService {
         return portalRepository.findSliceByCondition(condition, pageable);
     }
 
-//    public PortalDocumentResponseDto searchByAcademicNumber(String academicNumber){
-//
-//        List<PortalDocument> portalDocuments = portalDocumentRepository.findAllByAcademicNumber(academicNumber);
-//
-//        if(portalDocuments.isEmpty()) throw new BaseException(RESPONSE_ERROR);
-//
-//        return PortalDocumentResponseDto.fromEntities(portalDocuments);
-//    }
+    public PortalDocumentResponseDto searchByAcademicNumber(String academicNumber){
+
+        List<PortalDocument> portalDocuments = portalDocumentRepository.findAllByAcademicNumber(academicNumber);
+
+        if(portalDocuments.isEmpty()) throw new BaseException(RESPONSE_ERROR);
+
+        return PortalDocumentResponseDto.fromEntities(portalDocuments);
+    }
 
 
 }

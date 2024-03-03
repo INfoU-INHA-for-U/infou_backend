@@ -60,7 +60,7 @@ public class SecurityConfig{
                 .requestMatchers(WHITE_LIST_URL).permitAll()
                 .requestMatchers("/api/v1/user/**").hasRole(Role.USER.name())
                 .requestMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.name())
-                .anyRequest().authenticated(); //나머지 uri은 인증만
+                .anyRequest().permitAll(); //나머지 uri은 인증만
 
         //filter 적용
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
