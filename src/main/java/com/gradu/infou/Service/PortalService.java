@@ -32,7 +32,7 @@ public class PortalService {
 
     private final PortalRepository portalRepository;
     private final PortalProfessorRepository portalProfessorRepository;
-    //private final PortalDocumentRepository portalDocumentRepository;
+    private final PortalDocumentRepository portalDocumentRepository;
 
     @Transactional(readOnly = true)
     public List<PortalResponseDto> searchByLectureName(String major, String lectureName) {
