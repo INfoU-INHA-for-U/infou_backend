@@ -33,10 +33,10 @@ public class LogController {
         return "ok";
     }
 
-    @GetMapping("/test")
-    public Iterable<ElasticSearchItems> test(){
-        Iterable<ElasticSearchItems> all = elasticSearchItemsRepository.findAll();
+    // @GetMapping("/test")
+    // public Iterable<ElasticSearchItems> test(){
+    //     Iterable<ElasticSearchItems> all = elasticSearchItemsRepository.findAll();
 
-        return all;
-    }
+    //     return all;
+    // }
 }
