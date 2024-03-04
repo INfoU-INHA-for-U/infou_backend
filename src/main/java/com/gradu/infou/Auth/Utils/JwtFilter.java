@@ -73,10 +73,11 @@ public class JwtFilter extends OncePerRequestFilter {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             response.getWriter().write(exception.getMessage());
-            //exception.printStackTrace();
+            //exception.printStackTrace()
 
         }
 
         filterChain.doFilter(request, response);
     }
+
 }

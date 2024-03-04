@@ -13,14 +13,16 @@ public class JoinReqDto {
     private String authId;
     private String email;
     private String name;
-    private Role role;
+    //private Role role;
+
 
     public User toUserEntity(){
         return User.builder()
                 .authId(authId)
                 .email(email)
                 .name(name)
-                .role(role.name())
+                .role(Role.USER.name())
+                .reward(0L)
                 .build();
     }
 }
