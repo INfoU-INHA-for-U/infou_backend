@@ -57,14 +57,14 @@ public class PortalService {
         return portalRepository.findSliceByCondition(condition, pageable);
     }
 
-//    public PortalDocumentResponseDto searchByAcademicNumber(String academicNumber){
-//
-//        List<PortalDocument> portalDocuments = portalDocumentRepository.findAllByAcademicNumber(academicNumber);
-//
-//        if(portalDocuments.isEmpty()) throw new BaseException(RESPONSE_ERROR);
-//
-//        return PortalDocumentResponseDto.fromEntities(portalDocuments);
-//    }
+   public PortalDocumentResponseDto searchByAcademicNumber(String academicNumber){
+
+       List<PortalDocument> portalDocuments = portalDocumentRepository.findAllByAcademicNumber(academicNumber);
+
+       if(portalDocuments.isEmpty()) throw new BaseException(RESPONSE_ERROR);
+
+       return PortalDocumentResponseDto.fromEntities(portalDocuments);
+   }
 
 
 }
