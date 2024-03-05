@@ -56,11 +56,11 @@ public class PortalController {
         return new BaseResponse<Slice<PortalResponseDto>>(res);
     }
 
-   @GetMapping("/detail")
-   public BaseResponse<PortalDocumentResponseDto> PortalDetail(@RequestParam("an") String academicNumber){
+    @GetMapping("/detail")
+    public BaseResponse<PortalDocumentResponseDto> PortalDetail(@RequestParam("an") String academicNumber){
 
-       PortalDocumentResponseDto res = portalService.searchByAcademicNumber(academicNumber);
+        PortalDocumentResponseDto res = portalService.searchByAcademicNumber(academicNumber);
 
-       return new BaseResponse<PortalDocumentResponseDto>(res);
-   }
+        return new BaseResponse<PortalDocumentResponseDto>(res);
+    }
 }

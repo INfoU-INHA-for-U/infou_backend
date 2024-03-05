@@ -3,6 +3,7 @@ package com.gradu.infou.Service;
 import com.gradu.infou.Config.BaseResponseStatus;
 import com.gradu.infou.Config.exception.BaseException;
 import com.gradu.infou.Domain.Dto.Controller.SearchCondition;
+
 import com.gradu.infou.Domain.Dto.Service.PortalDetailDto;
 import com.gradu.infou.Domain.Dto.Service.PortalDocumentResponseDto;
 import com.gradu.infou.Domain.Dto.Service.PortalResponseDto;
@@ -10,6 +11,7 @@ import com.gradu.infou.Domain.Entity.Portal;
 import com.gradu.infou.Domain.Entity.PortalDocument;
 import com.gradu.infou.Domain.Entity.PortalProfessor;
 import com.gradu.infou.Repository.PortalProfessorRepository;
+
 import com.gradu.infou.Repository.portal.PortalDocumentRepository;
 import com.gradu.infou.Repository.portal.PortalRepository;
 import lombok.RequiredArgsConstructor;
@@ -57,14 +59,16 @@ public class PortalService {
         return portalRepository.findSliceByCondition(condition, pageable);
     }
 
-   public PortalDocumentResponseDto searchByAcademicNumber(String academicNumber){
 
-       List<PortalDocument> portalDocuments = portalDocumentRepository.findAllByAcademicNumber(academicNumber);
+    public PortalDocumentResponseDto searchByAcademicNumber(String academicNumber){
 
-       if(portalDocuments.isEmpty()) throw new BaseException(RESPONSE_ERROR);
+        List<PortalDocument> portalDocuments = portalDocumentRepository.findAllByAcademicNumber(academicNumber);
 
-       return PortalDocumentResponseDto.fromEntities(portalDocuments);
-   }
+        if(portalDocuments.isEmpty()) throw new BaseException(RESPONSE_ERROR);
+
+        return PortalDocumentResponseDto.fromEntities(portalDocuments);
+    }
+
 
 
 }
