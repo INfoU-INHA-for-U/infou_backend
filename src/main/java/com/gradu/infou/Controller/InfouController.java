@@ -66,7 +66,7 @@ public class InfouController {
     }
 
     @Operation(
-            summary = "인기 교양 상세 목록 조회",
+            summary = "인기 교양 상세 목록 조회(미완성)",
             description = "인기 교양을 상세 목록을 조회하는 api입니다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
@@ -80,7 +80,7 @@ public class InfouController {
     }
 
     @Operation(
-            summary = "추천 강의평",
+            summary = "추천 강의평(미완성)",
             description = "나와 비슷한 사용자가 많이 조회한 강의 목록 api입니다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
@@ -100,11 +100,15 @@ public class InfouController {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
                     })
+            },
+            parameters = {
+                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. (sort: 비워두면 시간 기준으로 내림차순 정렬됩니다.)", required = true)
             }
     )
     @GetMapping("/recent")
-    public BaseResponse RecentInfouList(){
-        return new BaseResponse();
+    public BaseResponse<Page<InfouDocument>> RecentInfouList(@PageableDefault(sort="timestamp", direction = Sort.Direction.DESC) Pageable pageable){
+        Page<InfouDocument> infouDocuments = infouService.recentInfou(pageable);
+        return new BaseResponse(infouDocuments);
     }
 
     @Operation(

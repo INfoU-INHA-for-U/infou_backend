@@ -96,6 +96,11 @@ public class InfouService {
         return infouDocuments;
     }
 
+    public Page<InfouDocument> recentInfou(Pageable pageable){
+        Page<InfouDocument> all = infouRepository.findAll(pageable);
+        return all;
+    }
+
 
     private HashMap<String, Double> getRatio(SearchResponse searchResponse, String attribute){
 
