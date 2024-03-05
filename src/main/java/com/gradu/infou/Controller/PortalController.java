@@ -9,6 +9,12 @@ import com.gradu.infou.Domain.Dto.Service.PortalDocumentResponseDto;
 import com.gradu.infou.Domain.Dto.Service.PortalResponseDto;
 import com.gradu.infou.Domain.Entity.PortalDocument;
 import com.gradu.infou.Service.PortalService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,10 +32,24 @@ import java.util.List;
 @RequestMapping("/api/v1/portals")
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Portal", description = "portal 강의평 관련입니다.")
 public class PortalController {
 
     private final PortalService portalService;
 
+    @Operation(
+            summary = "강의평 검색 api(수정 필요)",
+            description = "강의평을 검색하는 api입니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "successful operation", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
+                    })
+            }
+//            ,
+//            parameters = {
+//                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. (sort: 비워두면 score 기준으로 내림차순 정렬됩니다.)", required = true)
+//            }
+    )
     @GetMapping("/search")
     public BaseResponse<List<PortalResponseDto>> PortalSearch(@RequestParam("major") String major, @RequestParam("keyword") String keyword, @RequestParam("condition") Condition condition) {
 
@@ -44,6 +64,15 @@ public class PortalController {
         return new BaseResponse < List<PortalResponseDto>> (res);
     }
 
+    @Operation(
+            summary = "강의평 검색 api(수정 필요)",
+            description = "강의평을 검색하는 api입니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "successful operation", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
+                    })
+            }
+    )
     @GetMapping("/total")
     public BaseResponse<Slice<PortalResponseDto>> PortalTotal(@Nullable SearchCondition searchCondition, @Nullable Pageable pageable){ //page default가 size=10, page=0이기 때문에, 따로 설정 안함. 할 경우, @PageableDefault(size=10, page=0), 이런 식으로 작성
 
@@ -56,6 +85,15 @@ public class PortalController {
         return new BaseResponse<Slice<PortalResponseDto>>(res);
     }
 
+    @Operation(
+            summary = "강의평 상세 조회 api(수정 필요)",
+            description = "강의평을 상세 조회하는 api입니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "successful operation", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
+                    })
+            }
+    )
     @GetMapping("/detail")
     public BaseResponse<PortalDocumentResponseDto> PortalDetail(@RequestParam("an") String academicNumber){
 

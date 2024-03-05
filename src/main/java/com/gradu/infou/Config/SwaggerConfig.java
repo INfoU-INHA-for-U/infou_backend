@@ -16,7 +16,7 @@ public class SwaggerConfig {
         return new OpenAPI().addSecurityItem(new SecurityRequirement().addList("JWT"))
                 .components(new Components().addSecuritySchemes("JWT", createAPIKeyScheme()))
                 .info(new Info().title("INfoU API")
-                        .description("This is INfoU API")
+                        .description("This is INfoU API \n auth-controller의 api를 제외한 나머지 api는 jwt access token이 필요합니다.")
                         .version("v0.0.1"));
     }
 
