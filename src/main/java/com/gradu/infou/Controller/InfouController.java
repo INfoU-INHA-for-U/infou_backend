@@ -56,10 +56,13 @@ public class InfouController {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
                     })
+            },
+            parameters = {
+                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. (sort: 비워두면 score 기준으로 내림차순 정렬됩니다.)", required = true)
             }
     )
     @GetMapping("/popular")
-    public BaseResponse<Page<InfouDocument>> popularGEDetailList(Pageable pageable){
+    public BaseResponse<Page<InfouDocument>> popularGEDetailList(@PageableDefault(sort="score", direction = Sort.Direction.DESC) Pageable pageable){
         Page<InfouDocument> infouDocuments = infouService.popularGE(pageable);
 
         return new BaseResponse(infouDocuments);
