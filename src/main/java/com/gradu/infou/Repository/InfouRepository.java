@@ -18,6 +18,7 @@ public interface InfouRepository extends ElasticsearchRepository<InfouDocument, 
     Page<InfouDocument> findByLectureName(String lectureName, Pageable pageable);
 //    Page<InfouDocument> findByLectureTypeGroup()
     Page<InfouDocument> findByAcademicNumberAndProfessorName(String academicNumber, String professorName, Pageable pageable);
+    Page<InfouDocument> findByLectureTypeIn(List<String> lectureType, Pageable pageable);
 
 
 }

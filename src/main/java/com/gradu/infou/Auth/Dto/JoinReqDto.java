@@ -13,6 +13,7 @@ public class JoinReqDto {
     private String authId;
     private String email;
     private String name;
+    private String grade;
     //private Role role;
 
 
@@ -22,6 +23,7 @@ public class JoinReqDto {
                 .email(email)
                 .name(name)
                 .role(Role.USER.name())
+                .grade(grade)
                 .reward(0L)
                 .build();
     }

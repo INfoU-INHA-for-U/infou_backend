@@ -23,20 +23,15 @@ public class InfouDocument {
     private String id;
     @Field(name = "@timestamp",  format = DateFormat.custom, pattern = "uuuu-MM-dd'T'HH:mm:ss", type = FieldType.Date)
     private LocalDateTime timestamp;
+    // 강의
     @Field(name="lecture_name", type = FieldType.Text)
     private String lectureName;
     @Field(name="lecture_type", type = FieldType.Text)
     private String lectureType;
-    @Field(name="department", type = FieldType.Text)
-    private String department;
-    @Field(type = FieldType.Text)
-    private String semester;
     @Field(name="professor_name", type = FieldType.Text)
     private String professorName;
     @Field(name="academic_number", type = FieldType.Text)
     private String academicNumber;
-    @Field(type = FieldType.Text)
-    private String grade;
     @Field(type = FieldType.Text)
     private String skill;
     @Field(type = FieldType.Text)
@@ -49,6 +44,18 @@ public class InfouDocument {
     private Integer agree;
     @Field(type = FieldType.Integer)
     private Integer disagree;
+
+    //user
+    @Field(type = FieldType.Text)
+    private String authId;
+    @Field(name="department", type = FieldType.Text)
+    private String department;
+    @Field(type = FieldType.Text)
+    private String semester;
+    @Field(type = FieldType.Text)
+    private String grade;
+
+
 
 
 }

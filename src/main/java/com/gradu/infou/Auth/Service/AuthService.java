@@ -28,7 +28,6 @@ public class AuthService {
 
 
     public String createToken(String userName){
-        //인증 과정 필요(userName과 password를 사용한 인증 구현 필요)
         return jwtUtil.createJwt(userName, expiredAtMs);
     }
 

@@ -1,11 +1,17 @@
 package com.gradu.infou.Service;
 
+import com.gradu.infou.Auth.Utils.JwtUtil;
+import com.gradu.infou.Config.BaseResponseStatus;
+import com.gradu.infou.Config.exception.BaseException;
 import com.gradu.infou.Domain.Dto.Controller.AddInfouReqDto;
 import com.gradu.infou.Domain.Dto.Controller.Condition;
 import com.gradu.infou.Domain.Dto.Service.InfouDetailResDto;
 import com.gradu.infou.Domain.Entity.InfouDocument;
+import com.gradu.infou.Domain.Entity.User;
 import com.gradu.infou.Repository.InfouRepository;
+import com.gradu.infou.Repository.UserRepository;
 import com.gradu.infou.converter.InfouConverter;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,13 +43,19 @@ import java.util.stream.Collectors;
 public class InfouService {
     private final InfouRepository infouRepository;
     private final RestHighLevelClient elasticsearchClient;
+    private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
     private String INDEX="lecture_infou";
 
 
     @Transactional(readOnly = true)
-    public void addInfou(AddInfouReqDto addInfouReqDto){
+    public void addInfou(HttpServletRequest request, AddInfouReqDto addInfouReqDto){
+        String token = jwtUtil.resolveToken(request);
+        String clientId = jwtUtil.getClientId(token);
+        User user = userRepository.findByAuthId(clientId).orElseThrow(() -> new BaseException(BaseResponseStatus.USERS_NOT_FOUND));
+
         //강의평 작성 xss 보안 추가 필요
-        InfouDocument infouDocument = InfouConverter.toInfouDocument(addInfouReqDto);
+        InfouDocument infouDocument = InfouConverter.toInfouDocument(clientId, addInfouReqDto);
         infouRepository.save(infouDocument);
     }
 
@@ -74,6 +86,17 @@ public class InfouService {
         return InfouDetailResDto.fromEntity(total, levelRatio, skillRatio, gradeRatio, infouDocuments);
     }
 
+    public Page<InfouDocument> popularGE(Pageable pageable){
+        List<String> GE = new ArrayList<>();
+        GE.add("일선");
+        GE.add("교선");
+        GE.add("교필");
+        Page<InfouDocument> infouDocuments = infouRepository.findByLectureTypeIn(GE, pageable);
+
+        return infouDocuments;
+    }
+
+
     private HashMap<String, Double> getRatio(SearchResponse searchResponse, String attribute){
 
         Terms terms = searchResponse.getAggregations().get(attribute);
@@ -98,7 +121,7 @@ public class InfouService {
     }
 
 
-    public SearchResponse searchLecturesWithAggregations(String academicNumber, String professorName) throws IOException {
+    private SearchResponse searchLecturesWithAggregations(String academicNumber, String professorName) throws IOException {
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 
         // 검색 쿼리 설정

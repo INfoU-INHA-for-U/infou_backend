@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,8 +43,8 @@ public class InfouController {
             }
     )
     @PostMapping
-    public BaseResponse InfouAdd(@RequestBody AddInfouReqDto addInfouReqDto){
-        infouService.addInfou(addInfouReqDto);
+    public BaseResponse InfouAdd(HttpServletRequest httpServletRequest, @RequestBody AddInfouReqDto addInfouReqDto){
+        infouService.addInfou(httpServletRequest, addInfouReqDto);
 
         return new BaseResponse();
     }
@@ -58,9 +59,10 @@ public class InfouController {
             }
     )
     @GetMapping("/popular")
-    public BaseResponse popularGEDetailList(){
+    public BaseResponse<Page<InfouDocument>> popularGEDetailList(Pageable pageable){
+        Page<InfouDocument> infouDocuments = infouService.popularGE(pageable);
 
-        return new BaseResponse();
+        return new BaseResponse(infouDocuments);
     }
 
     @Operation(
@@ -92,6 +94,20 @@ public class InfouController {
     }
 
     @Operation(
+            summary = "최근 강의평",
+            description = "최근 강의평 목록 api입니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "successful operation", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
+                    })
+            }
+    )
+    @GetMapping("/recent")
+    public BaseResponse RecentInfouList(){
+        return new BaseResponse();
+    }
+
+    @Operation(
             summary = "강의평 상세 조회",
             description = "강의평 상세 조회 api입니다.",
             responses = {
@@ -112,7 +128,7 @@ public class InfouController {
     }
 
     @Operation(
-            summary = "infou 강의평 검색",
+            summary = "infou 강의평 검색(수정 필요)",
             description = "infou 강의평 검색 api입니다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
