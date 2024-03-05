@@ -27,6 +27,7 @@ import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.metrics.ValueCount;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -46,12 +47,14 @@ public class InfouService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private String INDEX="lecture_infou";
+    @Value("${jwt.secret.access}")
+    private String secretAccessKey;
 
 
     @Transactional(readOnly = true)
     public void addInfou(HttpServletRequest request, AddInfouReqDto addInfouReqDto){
         String token = jwtUtil.resolveToken(request);
-        String clientId = jwtUtil.getClientId(token);
+        String clientId = jwtUtil.getId(token, secretAccessKey);
         User user = userRepository.findByAuthId(clientId).orElseThrow(() -> new BaseException(BaseResponseStatus.USERS_NOT_FOUND));
 
         //강의평 작성 xss 보안 추가 필요
