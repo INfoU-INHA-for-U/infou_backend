@@ -1,6 +1,5 @@
 package com.gradu.infou.Domain.Dto.Service;
 
-//import com.gradu.infou.Domain.Entity.PortalDocument;
 import com.gradu.infou.Domain.Entity.PortalDocument;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

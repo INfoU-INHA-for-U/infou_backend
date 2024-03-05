@@ -4,56 +4,33 @@
 # documentation.
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
 name: Java CI with Gradle
-
 on:
   push:
     branches: [ "develop" ]
-
-# permissions:
-#   contents: read
-
-env:
-  JAVA_VERSION: '17'
-  JAVA_DISTRIBUTION: 'temurin'
-  AWS_REGION: us-east-2
-  EB_APPLICATION_NAME: INfoU_dev
-  EB_ENVIRONMENT_NAME: INfoUdev-env
-  EB_DEPLOYMENT_PACKAGE: ./docker-compose.yml
-
+permissions:
+  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-
     - name: checkout
       uses: actions/checkout@v3
-
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
-        java-version: ${{ env.JAVA_VERSION }}
-        distribution: ${{ env.JAVA_DISTRIBUTION }}
-
+        java-version: '17'
+        distribution: 'temurin'
     ## create application.properties
     - name: make application.properties
       run: |
         ## create application.properties
         cd ./src/main/resources
-
         # application.properties 파일 생성
         touch ./application.properties
-
         # GitHub-Actions 에서 설정한 값을 application-database.yaml 파일에 쓰기
         echo "${{ secrets.DATABASE }}" >> ./application.properties
       shell: bash
-
-    # ## docker-compose.yml 파일 생성
-    # - name: make docker-compose.yml
-    #   run: |
-    #     touch ./docker-compose.yml
-    #     echo "${{secrets.COMPOSE}}" > "${{ env.EB_DEPLOYMENT_PACKAGE }}"
     
     ## Grant execute permission for gradlew
     - name: Grant execute permission for gradlew
@@ -62,58 +39,27 @@ jobs:
     ## gradle build
     - name: Build with Gradle
       run: ./gradlew bootJar
-
-
     ## 웹 이미지 빌드 및 도커허브에 push
     - name: web docker build and push
       run: |
         docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_REPO_WEB }} .
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_REPO_WEB }}
-        # 빌드된 이미지의 정보 출력
-        echo "::set-output name=image::${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_REPO_WEB }}:$IMAGE_TAG"
-
-    ## timestamp
-    - name: Get current time
-      uses: 1466587594/get-current-time@v2
-      id: current-time
+    ## docker compose up
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
       with:
-        format: YYYYMMDD_HH-mm-ss
-        utcOffset: "+09:00"
-
-    - name: Generate deployment package 
-      run: |
-        mkdir -p deploy
-        cp -r .ebextensions deploy/.ebextensions
-        cp Dockerrun.aws.json deploy/Dockerrun.aws.json
-        cp -r .platform deploy/.platform
-        cd deploy && zip -r deploy.zip .
-
-    - name: Beanstalk Deploy
-      uses: einaregilsson/beanstalk-deploy@v20
-      with:
-        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        application_name: ${{ env.EB_APPLICATION_NAME }}
-        environment_name: ${{ env.EB_ENVIRONMENT_NAME }}
-        version_label: github-action-${{ steps.current-time.outputs.formattedTime }}
-        region: ${{ env.AWS_REGION }}
-        deployment_package: deploy/deploy.zip
-        wait_for_deployment: false
-
-    # ## docker compose up
-    # - name: executing remote ssh commands using password
-    #   uses: appleboy/ssh-action@master
-    #   with:
-    #     host: ${{ secrets.HOST }}
-    #     username: ubuntu
-    #     key: ${{ secrets.KEY }}
-    #     script: |
-    #       ## docker-compose.yml 파일 생성
-    #       touch ./docker-compose.yml
-    #       echo "${{secrets.COMPOSE}}" > ./docker-compose.yml
-    #       ## sudo docker rm -f $(sudo docker ps -qa)
-    #       sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_REPO_WEB }}
-    #       sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_REPO_NGINX }}
-    #       sudo docker-compose up -d
-    #       sudo docker image prune -f
+        host: ${{ secrets.HOST }}
+        username: ubuntu
+        key: ${{ secrets.KEY }}
+        script: |
+          ## docker-compose.yml 파일 생성
+          touch ./docker-compose.yml
+          echo "${{secrets.COMPOSE}}" > ./docker-compose.yml
+          ## sudo docker rm -f $(sudo docker ps -qa)
+          sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_REPO_WEB }}
+          sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKER_REPO_NGINX }}
+          docker-compose up -d
+          docker image prune -f
+          sudo docker-compose up -d
+          sudo docker image prune -f

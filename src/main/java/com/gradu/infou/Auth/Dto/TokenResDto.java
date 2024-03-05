@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Getter
-public class LoginResDto {
+public class TokenResDto {
     private String accessToken;
     private String refreshToken;
 
-    public static LoginResDto fromEntity(String accessToken, String refreshToken){
-        return LoginResDto.builder()
+    public static TokenResDto fromEntity(String accessToken, String refreshToken){
+        return TokenResDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();

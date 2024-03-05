@@ -7,5 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.List;
 
 public interface PortalDocumentRepository extends ElasticsearchRepository<PortalDocument, Long> {
-    List<PortalDocument> findAllByAcademicNumber(String academicNumber);
+   List<PortalDocument> findAllByAcademicNumber(String academicNumber);
+
 }
