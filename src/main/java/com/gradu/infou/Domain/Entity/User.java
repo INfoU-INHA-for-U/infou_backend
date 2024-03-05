@@ -25,7 +25,7 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String role;
     @Column(nullable = false)
-    @ColumnDefault("0L")
+    @ColumnDefault("0")
     private Long reward;
 
     public void modifyReward(boolean status, Long value){

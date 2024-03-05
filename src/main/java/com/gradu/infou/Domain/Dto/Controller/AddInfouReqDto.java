@@ -16,33 +16,28 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Getter
 @Valid
 public class AddInfouReqDto {
+    
     @NotBlank
-    @Field(type = FieldType.Text)
     private String lectureName;
-    @Field(type = FieldType.Text)
+    @NotBlank
+    private String lectureType;
+    @NotBlank
     private String department;
     @NotBlank
-    @Field(type = FieldType.Text)
     private String semester;
-    @Field(type = FieldType.Text)
+    @NotBlank
     private String professorName;
     @NotBlank
-    @Field(type = FieldType.Text)
     private String academicNumber;
     @NotBlank
-    @Field(type = FieldType.Text)
     private String grade;
     @NotBlank
-    @Field(type = FieldType.Text)
     private String skill;
     @NotBlank
-    @Field(type = FieldType.Text)
     private String level;
     @PositiveOrZero
-    @Field(type = FieldType.Double)
     private Double score;
     @Size(min=30, max=1000)
-    @Field(type = FieldType.Text)
     private String review;
 
 

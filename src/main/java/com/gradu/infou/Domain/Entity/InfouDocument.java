@@ -20,11 +20,13 @@ import java.util.function.DoubleUnaryOperator;
 @Getter
 public class InfouDocument {
     @Id
-    private Long id;
+    private String id;
     @Field(name = "@timestamp",  format = DateFormat.custom, pattern = "uuuu-MM-dd'T'HH:mm:ss", type = FieldType.Date)
     private LocalDateTime timestamp;
     @Field(name="lecture_name", type = FieldType.Text)
     private String lectureName;
+    @Field(name="lecture_type", type = FieldType.Text)
+    private String lectureType;
     @Field(name="department", type = FieldType.Text)
     private String department;
     @Field(type = FieldType.Text)
