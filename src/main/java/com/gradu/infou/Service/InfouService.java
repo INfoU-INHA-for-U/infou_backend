@@ -54,11 +54,12 @@ public class InfouService {
     @Transactional(readOnly = true)
     public void addInfou(HttpServletRequest request, AddInfouReqDto addInfouReqDto){
         String token = jwtUtil.resolveToken(request);
-        String clientId = jwtUtil.getId(token, secretAccessKey);
-        User user = userRepository.findByAuthId(clientId).orElseThrow(() -> new BaseException(BaseResponseStatus.USERS_NOT_FOUND));
+        String id = jwtUtil.getId(token, secretAccessKey);
+        Long idL = Long.parseLong(id);
+        User user = userRepository.findById(idL).orElseThrow(() -> new BaseException(BaseResponseStatus.USERS_NOT_FOUND));
 
         //강의평 작성 xss 보안 추가 필요
-        InfouDocument infouDocument = InfouConverter.toInfouDocument(clientId, addInfouReqDto);
+        InfouDocument infouDocument = InfouConverter.toInfouDocument(id, addInfouReqDto);
         infouRepository.save(infouDocument);
     }
 
