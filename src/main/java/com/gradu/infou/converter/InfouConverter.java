@@ -10,10 +10,10 @@ import java.time.ZoneId;
 import static org.springframework.data.elasticsearch.annotations.FieldType.Date;
 
 public class InfouConverter {
-    public static InfouDocument toInfouDocument(String authId, AddInfouReqDto addInfouReqDto){
+    public static InfouDocument toInfouDocument(String userId, AddInfouReqDto addInfouReqDto){
         return InfouDocument.builder()
                 .timestamp(LocalDateTime.now(ZoneId.of("GMT")))
-                .authId(authId)
+                .userId(userId)
                 .lectureName(addInfouReqDto.getLectureName())
                 .lectureType(addInfouReqDto.getLectureType())
                 .department(addInfouReqDto.getDepartment())

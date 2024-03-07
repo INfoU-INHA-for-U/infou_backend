@@ -47,7 +47,7 @@ public class InfouDocument {
 
     //user
     @Field(type = FieldType.Text)
-    private String authId;
+    private String userId;
     @Field(name="department", type = FieldType.Text)
     private String department;
     @Field(type = FieldType.Text)

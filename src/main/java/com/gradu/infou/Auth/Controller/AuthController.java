@@ -13,10 +13,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
 @Tag(name = "Auth", description = "로그인/회원가입 관련 api입니다. \n logout을 할 때는 /api/v1/auth/logout을 하면 됩니다.")
 @RequestMapping("/api/v1/auth")
@@ -30,10 +32,11 @@ public class AuthController {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
                     })
-            },
-            parameters = {
-                    @Parameter(name="joinReqDto", description = "회원 정보를 입력합니다. \n authId: 구글 로그인하고 얻는 id 정보, \n email: '@inha.edu' 또는 '@inha.ac.kr'이어야 합니다.", required = true)
             }
+//            ,
+//            parameters = {
+//                    @Parameter(name="joinReqDto", description = "회원 정보를 입력합니다. \n authId: 구글 로그인하고 얻는 id 정보, \n email: '@inha.edu' 또는 '@inha.ac.kr'이어야 합니다.", required = true)
+//            }
     )
     @PostMapping("/join")
     private BaseResponse<TokenResDto> join(@RequestBody JoinReqDto joinReqDto){
@@ -47,10 +50,11 @@ public class AuthController {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
                     })
-            },
-            parameters = {
-                    @Parameter(name="loginReqDto", description = "회원 정보를 입력합니다. authId: 구글 로그인하고 얻는 id 정보", required = true)
             }
+//            ,
+//            parameters = {
+//                    @Parameter(name="loginReqDto", description = "회원 정보를 입력합니다. authId: 구글 로그인하고 얻는 id 정보", required = true)
+//            }
     )
     @PostMapping("/login")
     private BaseResponse<TokenResDto> login(@RequestBody LoginReqDto loginReqDto){
