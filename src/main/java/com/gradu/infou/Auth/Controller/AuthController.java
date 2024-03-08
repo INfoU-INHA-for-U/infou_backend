@@ -27,16 +27,12 @@ public class AuthController {
 
     @Operation(
             summary = "회원가입",
-            description = "회원가입 api입니다.",
+            description = "회원가입 api입니다. 회원 정보를 입력합니다. authId: 구글 로그인하고 얻는 id 정보, email: '@inha.edu' 또는 '@inha.ac.kr'이어야 합니다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
                     })
             }
-//            ,
-//            parameters = {
-//                    @Parameter(name="joinReqDto", description = "회원 정보를 입력합니다. \n authId: 구글 로그인하고 얻는 id 정보, \n email: '@inha.edu' 또는 '@inha.ac.kr'이어야 합니다.", required = true)
-//            }
     )
     @PostMapping("/join")
     private BaseResponse<TokenResDto> join(@RequestBody JoinReqDto joinReqDto){
@@ -51,10 +47,6 @@ public class AuthController {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
                     })
             }
-//            ,
-//            parameters = {
-//                    @Parameter(name="loginReqDto", description = "회원 정보를 입력합니다. authId: 구글 로그인하고 얻는 id 정보", required = true)
-//            }
     )
     @PostMapping("/login")
     private BaseResponse<TokenResDto> login(@RequestBody LoginReqDto loginReqDto){
