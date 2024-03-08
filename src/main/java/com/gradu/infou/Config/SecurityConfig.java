@@ -72,7 +72,7 @@ public class SecurityConfig{
                 .requestMatchers(WHITE_LIST_URL).permitAll()
                 .requestMatchers("/api/v1/user/**").hasRole(Role.USER.name())
                 .requestMatchers("/api/v1/admin/**").hasRole(Role.ADMIN.name())
-                .anyRequest().permitAll(); //나머지 uri은 인증만
+                .anyRequest().authenticated(); //나머지 uri은 인증만
 
         //authorizeRequests에서 발생한 Exception 처리
         http.exceptionHandling(exceptionHandling-> exceptionHandling

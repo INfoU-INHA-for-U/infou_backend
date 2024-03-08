@@ -125,7 +125,7 @@ public class InfouController {
             parameters = {
                     @Parameter(name="academicNumber", description = "학수번호를 입력해주세요.", required = true),
                     @Parameter(name="professorName", description = "교수명 입력합니다.", required = true),
-                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. (size: infouDocuments의 개수를 설정합니다. sort: 정렬하고 싶은 속성,정렬 기준(ex, {score,desc},{skill,asc},{level,desc})", required = true)
+                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. (size: infouDocuments의 개수를 설정합니다. sort: 정렬하고 싶은 속성,정렬 기준(ex, {score,desc},{skill,asc},{level,desc}, score: 추천 점수, skill: 강의력, level: 난이도)", required = true)
             }
     )
     @GetMapping("/details")
