@@ -21,9 +21,13 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.script.Script;
+import org.elasticsearch.script.ScriptType;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.BucketOrder;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.aggregations.metrics.ValueCount;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +70,7 @@ public class InfouService {
     public Page<InfouDocument> searchInfou(String keyword, Condition condition, Pageable pageable){
         log.info(pageable.getSort().toString());
         Page<InfouDocument> pageByLectureName=null;
-        if(condition.equals(Condition.name)) {
+        if(condition.equals(Condition.lecture_name)) {
             pageByLectureName = infouRepository.findByLectureName(keyword, pageable);
         }
 
@@ -158,5 +162,7 @@ public class InfouService {
 
         return searchResponse;
     }
+
+
 
 }

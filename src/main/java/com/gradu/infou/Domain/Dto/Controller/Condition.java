@@ -1,5 +1,5 @@
 package com.gradu.infou.Domain.Dto.Controller;
 
 public enum Condition {
-    name, professor
+    professor_name, lecture_name, department
 }
