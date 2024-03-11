@@ -7,6 +7,7 @@ import com.gradu.infou.Domain.Dto.Service.PortalDocumentResponseDto;
 import com.gradu.infou.Domain.Entity.PortalDocument;
 import com.gradu.infou.Service.PortalService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -80,12 +81,17 @@ public class PortalController {
 //    }
 
     @Operation(
-            summary = "강의평 상세 조회 api(수정 필요)",
+            summary = "강의평 상세 조회 api",
             description = "강의평을 상세 조회하는 api입니다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
                     })
+            },
+            parameters = {
+                    @Parameter(name="an", description = "학수번호를 입력합니다."),
+                    @Parameter(name="professor", description = "교수명을 입력합니다."),
+                    @Parameter(name="semester", description = "학기를 입력합니다. ex) 202202")
             }
     )
     @GetMapping("/detail")
