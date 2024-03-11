@@ -91,13 +91,12 @@ public class PortalController {
             parameters = {
                     @Parameter(name="an", description = "학수번호를 입력합니다."),
                     @Parameter(name="professor", description = "교수명을 입력합니다."),
-                    @Parameter(name="semester", description = "학기를 입력합니다. ex) 202202")
             }
     )
     @GetMapping("/detail")
-    public BaseResponse<List<PortalDocument>> PortalDetail(@RequestParam("an") String academicNumber, @RequestParam("professor") String professor, @RequestParam("semester") String semester){
+    public BaseResponse<List<PortalDocument>> PortalDetail(@RequestParam("an") String academicNumber, @RequestParam("professor") String professor){
 
-        List<PortalDocument> res = portalService.searchDetail(academicNumber, professor, semester);
+        List<PortalDocument> res = portalService.searchDetail(academicNumber, professor);
 
         return new BaseResponse<>(res);
     }
