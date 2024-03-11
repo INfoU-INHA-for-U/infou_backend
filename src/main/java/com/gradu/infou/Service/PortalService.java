@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 import static com.gradu.infou.Config.BaseResponseStatus.RESPONSE_ERROR;
 
@@ -101,13 +102,22 @@ public class PortalService {
         return results;
     }
 
-    public PortalDocumentResponseDto searchByAcademicNumber(String academicNumber){
+//    public PortalDocumentResponseDto searchByAcademicNumber(String academicNumber){
+//
+//        List<PortalDocument> portalDocuments = portalDocumentRepository.findAllByAcademicNumber(academicNumber);
+//
+//        if(portalDocuments.isEmpty()) throw new BaseException(RESPONSE_ERROR);
+//
+//        return PortalDocumentResponseDto.fromEntities(portalDocuments);
+//    }
 
-        List<PortalDocument> portalDocuments = portalDocumentRepository.findAllByAcademicNumber(academicNumber);
+    public List<PortalDocument> searchDetail(String academicNumber, String professor, String semester){
 
-        if(portalDocuments.isEmpty()) throw new BaseException(RESPONSE_ERROR);
+        List<PortalDocument> res = portalDocumentRepository.findAllByAcademicNumberAndProfessorName(academicNumber, professor);
 
-        return PortalDocumentResponseDto.fromEntities(portalDocuments);
+        if(res.isEmpty()) throw new BaseException(RESPONSE_ERROR);
+
+        return res;
     }
 
     private SearchResponse searchWithAggregations(String keyword, Condition condition, String[] sort, Pageable pageable) throws IOException {

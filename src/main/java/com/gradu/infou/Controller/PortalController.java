@@ -4,6 +4,7 @@ import com.gradu.infou.Config.BaseResponse;
 import com.gradu.infou.Domain.Dto.Controller.Condition;
 import com.gradu.infou.Domain.Dto.Controller.PortalSearchAggregationResult;
 import com.gradu.infou.Domain.Dto.Service.PortalDocumentResponseDto;
+import com.gradu.infou.Domain.Entity.PortalDocument;
 import com.gradu.infou.Service.PortalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -88,11 +89,11 @@ public class PortalController {
             }
     )
     @GetMapping("/detail")
-    public BaseResponse<PortalDocumentResponseDto> PortalDetail(@RequestParam("an") String academicNumber){
+    public BaseResponse<List<PortalDocument>> PortalDetail(@RequestParam("an") String academicNumber, @RequestParam("professor") String professor, @RequestParam("semester") String semester){
 
-        PortalDocumentResponseDto res = portalService.searchByAcademicNumber(academicNumber);
+        List<PortalDocument> res = portalService.searchDetail(academicNumber, professor, semester);
 
-        return new BaseResponse<PortalDocumentResponseDto>(res);
+        return new BaseResponse<>(res);
     }
 
     @Operation(

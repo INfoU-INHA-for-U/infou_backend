@@ -11,7 +11,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.List;
 
-@Document(indexName = "portal")
+@Document(indexName = "lecture_portal")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
