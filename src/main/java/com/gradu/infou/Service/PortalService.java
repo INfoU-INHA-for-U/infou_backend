@@ -111,7 +111,7 @@ public class PortalService {
 //        return PortalDocumentResponseDto.fromEntities(portalDocuments);
 //    }
 
-    public List<PortalDocument> searchDetail(String academicNumber, String professor, String semester){
+    public List<PortalDocument> searchDetail(String academicNumber, String professor){
 
         List<PortalDocument> res = portalDocumentRepository.findAllByAcademicNumberAndProfessorName(academicNumber, professor);
 
