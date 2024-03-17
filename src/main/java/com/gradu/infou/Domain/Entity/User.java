@@ -19,15 +19,13 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String authId;
     @Column(nullable = false)
-    private String grade;
-    @Column(nullable = false)
     private String name;
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
     private String role;
     @Column(nullable = false)
-    @ColumnDefault("0")
+    @ColumnDefault("0L")
     private Long reward;
 
     public void modifyReward(boolean status, Long value){

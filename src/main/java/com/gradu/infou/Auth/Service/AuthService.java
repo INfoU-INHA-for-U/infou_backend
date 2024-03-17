@@ -44,6 +44,7 @@ public class AuthService {
     @Value("${jwt.secret.refresh}")
     private String secretRefreshKey;
 
+
     public TokenResDto join(JoinReqDto joinReqDto){
 
         isPresentUser(joinReqDto.getAuthId());
