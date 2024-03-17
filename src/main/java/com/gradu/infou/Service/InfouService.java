@@ -5,7 +5,9 @@ import com.gradu.infou.Config.BaseResponseStatus;
 import com.gradu.infou.Config.exception.BaseException;
 import com.gradu.infou.Domain.Dto.Controller.AddInfouReqDto;
 import com.gradu.infou.Domain.Dto.Controller.Condition;
+import com.gradu.infou.Domain.Dto.Controller.PortalSearchAggregationResult;
 import com.gradu.infou.Domain.Dto.Service.InfouDetailResDto;
+import com.gradu.infou.Domain.Dto.Service.SearchLectureResDto;
 import com.gradu.infou.Domain.Entity.InfouDocument;
 import com.gradu.infou.Domain.Entity.User;
 import com.gradu.infou.Repository.InfouRepository;
@@ -28,6 +30,7 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.BucketOrder;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.Avg;
 import org.elasticsearch.search.aggregations.metrics.ValueCount;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +56,7 @@ public class InfouService {
     private String INDEX="lecture_infou";
     @Value("${jwt.secret.access}")
     private String secretAccessKey;
+    private final ElasticQueryService elasticQueryService;
 
 
     @Transactional(readOnly = true)
@@ -67,16 +71,11 @@ public class InfouService {
         infouRepository.save(infouDocument);
     }
 
-    public Page<InfouDocument> searchInfou(String keyword, Condition condition, Pageable pageable){
-        log.info(pageable.getSort().toString());
-        Page<InfouDocument> pageByLectureName=null;
-        if(condition.equals(Condition.lecture_name)) {
-            pageByLectureName = infouRepository.findByLectureName(keyword, pageable);
-        }
+    public List<SearchLectureResDto> searchInfou(String keyword, Condition condition, Pageable pageable) throws IOException {
 
+        List<SearchLectureResDto> lectureResults = elasticQueryService.searchLecture(keyword, condition, pageable, "lecture_infou");
 
-        //log.info("개수: "+ pageByLectureName.getSize());
-        return pageByLectureName;
+        return lectureResults;
     }
 
     public InfouDetailResDto detailInfou(String academicNumber, String professorName, Pageable pageable) throws IOException {

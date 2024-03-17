@@ -4,6 +4,7 @@ import com.gradu.infou.Config.BaseResponse;
 import com.gradu.infou.Domain.Dto.Controller.Condition;
 import com.gradu.infou.Domain.Dto.Controller.PortalSearchAggregationResult;
 import com.gradu.infou.Domain.Dto.Service.PortalDocumentResponseDto;
+import com.gradu.infou.Domain.Dto.Service.SearchLectureResDto;
 import com.gradu.infou.Domain.Entity.PortalDocument;
 import com.gradu.infou.Service.PortalService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -90,7 +91,7 @@ public class PortalController {
             },
             parameters = {
                     @Parameter(name="an", description = "학수번호를 입력합니다."),
-                    @Parameter(name="professor", description = "교수명을 입력합니다."),
+                    @Parameter(name="professor", description = "교수명을 입력합니다.")
             }
     )
     @GetMapping("/detail")
@@ -115,9 +116,9 @@ public class PortalController {
             }
     )
     @GetMapping("/search")
-    public BaseResponse<List<PortalSearchAggregationResult>> PortalSearch(@RequestParam("keyword") String keyword, @RequestParam("condition") Condition condition, Pageable pageable) throws IOException {
+    public BaseResponse<List<SearchLectureResDto>> PortalSearch(@RequestParam("keyword") String keyword, @RequestParam("condition") Condition condition, Pageable pageable) throws IOException {
 
-        List<PortalSearchAggregationResult> results = portalService.searchSliceByCondition(keyword,condition,pageable);
+        List<SearchLectureResDto> results = portalService.searchSliceByCondition(keyword,condition,pageable);
 
         return new BaseResponse(results);
     }
