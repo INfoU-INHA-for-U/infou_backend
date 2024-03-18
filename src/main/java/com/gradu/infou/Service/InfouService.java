@@ -5,6 +5,7 @@ import com.gradu.infou.Config.BaseResponseStatus;
 import com.gradu.infou.Config.exception.BaseException;
 import com.gradu.infou.Domain.Dto.Controller.AddInfouReqDto;
 import com.gradu.infou.Domain.Dto.Controller.Condition;
+import com.gradu.infou.Domain.Dto.Controller.Kind;
 import com.gradu.infou.Domain.Dto.Controller.PortalSearchAggregationResult;
 import com.gradu.infou.Domain.Dto.Service.InfouDetailResDto;
 import com.gradu.infou.Domain.Dto.Service.SearchLectureResDto;
@@ -71,7 +72,7 @@ public class InfouService {
         infouRepository.save(infouDocument);
     }
 
-    public List<SearchLectureResDto> searchInfou(String keyword, Condition condition, Pageable pageable) throws IOException {
+    public List<SearchLectureResDto> searchInfou(String keyword, Kind condition, Pageable pageable) throws IOException {
 
         List<SearchLectureResDto> lectureResults = elasticQueryService.searchLecture(keyword, condition, pageable, "lecture_infou");
 

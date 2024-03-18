@@ -1,6 +1,7 @@
 package com.gradu.infou.Service;
 
 import com.gradu.infou.Domain.Dto.Controller.Condition;
+import com.gradu.infou.Domain.Dto.Controller.Kind;
 import com.gradu.infou.Domain.Dto.Controller.PortalSearchAggregationResult;
 import com.gradu.infou.Domain.Dto.Service.SearchLectureResDto;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class ElasticQueryService {
     private final RestHighLevelClient elasticsearchClient;
 
 
-    public SearchResponse searchWithAggregations(String keyword, Condition condition, String[] sort, Pageable pageable, String index) throws IOException {
+    public SearchResponse searchWithAggregations(String keyword, Kind condition, String[] sort, Pageable pageable, String index) throws IOException {
 
         int totalSize = pageable.getPageSize() * (pageable.getPageNumber() + 1);
         boolean asc = true;
@@ -63,7 +64,7 @@ public class ElasticQueryService {
         return search;
     }
 
-    public List<SearchLectureResDto> searchLecture(String keyword, Condition condition, Pageable pageable, String index) throws IOException {
+    public List<SearchLectureResDto> searchLecture(String keyword, Kind condition, Pageable pageable, String index) throws IOException {
         String[] sort = pageable.getSort().toString().split(": ");
         log.info("1: "+sort[0]);
         log.info("2: "+sort[1]);

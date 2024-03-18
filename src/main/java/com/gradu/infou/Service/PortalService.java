@@ -1,11 +1,15 @@
 package com.gradu.infou.Service;
 
+import com.gradu.infou.Config.BaseResponseStatus;
 import com.gradu.infou.Config.exception.BaseException;
 import com.gradu.infou.Domain.Dto.Controller.Condition;
 import com.gradu.infou.Domain.Dto.Controller.PortalSearchAggregationResult;
 
+import com.gradu.infou.Domain.Dto.Controller.SearchCondition;
 import com.gradu.infou.Domain.Dto.Service.PortalDocumentResponseDto;
+import com.gradu.infou.Domain.Dto.Service.PortalResponseDto;
 import com.gradu.infou.Domain.Dto.Service.SearchLectureResDto;
+import com.gradu.infou.Domain.Entity.Portal;
 import com.gradu.infou.Domain.Entity.PortalDocument;
 import com.gradu.infou.Repository.PortalProfessorRepository;
 
@@ -27,6 +31,7 @@ import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilde
 import org.elasticsearch.search.aggregations.metrics.Avg;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,9 +50,9 @@ public class PortalService {
 
     private final PortalRepository portalRepository;
     private final PortalProfessorRepository portalProfessorRepository;
-    private final PortalDocumentRepository portalDocumentRepository;
     private final RestHighLevelClient elasticsearchClient;
-    private final ElasticQueryService elasticQueryService;
+    private final PortalDocumentRepository portalDocumentRepository;
+
 
 
 //    @Transactional(readOnly = true)
@@ -72,15 +77,9 @@ public class PortalService {
 //    public Slice<PortalResponseDto> searchSliceByCondition(SearchCondition condition, Pageable pageable) {
 //        return portalRepository.findSliceByCondition(condition, pageable);
 //    }
-
-    @Transactional(readOnly = true)
-    public List<SearchLectureResDto> searchSliceByCondition(String keyword, Condition condition, Pageable pageable) throws IOException {
-
-        List<SearchLectureResDto> lectureResults = elasticQueryService.searchLecture(keyword, condition, pageable, "lecture_portal");
-
-        return lectureResults;
-    }
-
+//
+//
+//
 //    public PortalDocumentResponseDto searchByAcademicNumber(String academicNumber){
 //
 //        List<PortalDocument> portalDocuments = portalDocumentRepository.findAllByAcademicNumber(academicNumber);
@@ -90,14 +89,7 @@ public class PortalService {
 //        return PortalDocumentResponseDto.fromEntities(portalDocuments);
 //    }
 
-    public List<PortalDocument> searchDetail(String academicNumber, String professor){
 
-        List<PortalDocument> res = portalDocumentRepository.findAllByAcademicNumberAndProfessorName(academicNumber, professor);
-
-        if(res.isEmpty()) throw new BaseException(RESPONSE_ERROR);
-
-        return res;
-    }
 
 
 }
