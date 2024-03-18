@@ -3,7 +3,9 @@ package com.gradu.infou.Controller;
 import com.gradu.infou.Config.BaseResponse;
 import com.gradu.infou.Domain.Dto.Controller.AddInfouReqDto;
 import com.gradu.infou.Domain.Dto.Controller.Condition;
+import com.gradu.infou.Domain.Dto.Controller.Kind;
 import com.gradu.infou.Domain.Dto.Service.InfouDetailResDto;
+import com.gradu.infou.Domain.Dto.Service.SearchLectureResDto;
 import com.gradu.infou.Domain.Entity.InfouDocument;
 import com.gradu.infou.Service.InfouService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -125,7 +127,7 @@ public class InfouController {
             parameters = {
                     @Parameter(name="academicNumber", description = "학수번호를 입력해주세요.", required = true),
                     @Parameter(name="professorName", description = "교수명 입력합니다.", required = true),
-                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. (size: infouDocuments의 개수를 설정합니다. sort: 정렬하고 싶은 속성,정렬 기준(ex, {score,desc},{skill,asc},{level,desc}, score: 추천 점수, skill: 강의력, level: 난이도)", required = true)
+                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. \n\n size: infouDocuments의 개수를 설정합니다. \n\n sort: 정렬하고 싶은 속성,정렬 기준(ex, {score,desc},{skill,asc},{level,desc}, \n\n score: 추천 점수, skill: 강의력, level: 난이도", required = true)
             }
     )
     @GetMapping("/details")
@@ -135,7 +137,7 @@ public class InfouController {
     }
 
     @Operation(
-            summary = "infou 강의평 검색(수정 필요)",
+            summary = "infou 강의평 검색",
             description = "infou 강의평 검색 api입니다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
@@ -144,14 +146,17 @@ public class InfouController {
             },
             parameters = {
                     @Parameter(name="keyword", description = "검색어를 입력해주세요.", required = true),
-                    @Parameter(name="condition", description = "검색할 것을 입력합니다. (학과 검색: depart, 교수 검색: professor, 강의명 검색: lecture)", required = true),
-                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. sort의 값(score 오름차순을 하고 싶을 경우: score, score 내림차순을 하고 싶을 경우: DESC)", required = true)
+                    @Parameter(name="condition", description = "검색할 것을 입력합니다. \n\n (학과 검색: depart, 교수 검색: professor, 강의명 검색: lecture)", required = true),
+                    @Parameter(name="pageable",
+                            description = "강의평을 검색하는 api입니다. \n\n" +
+                                    "keyword: 검색어 \n\n"+
+                                    "pageable의 sort: {score,asc}/{score,desc}", required = true)
             }
     )
     @GetMapping("/search")
-    public BaseResponse<Page<InfouDocument>> InfouSearch(@PathParam("keyword") String keyword, @PathParam("condition") Condition condition, @PageableDefault(sort="score", direction = Sort.Direction.DESC) Pageable pageable){
+    public BaseResponse<List<SearchLectureResDto>> InfouSearch(@PathParam("keyword") String keyword, @PathParam("condition") Kind condition, @PageableDefault(sort="score", direction = Sort.Direction.DESC) Pageable pageable) throws IOException {
 
-        Page<InfouDocument> infouDocuments = infouService.searchInfou(keyword, condition, pageable);
+        List<SearchLectureResDto> infouDocuments = infouService.searchInfou(keyword, condition, pageable);
 
         return new BaseResponse<>(infouDocuments);
     }
