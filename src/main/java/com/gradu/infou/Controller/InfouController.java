@@ -3,6 +3,7 @@ package com.gradu.infou.Controller;
 import com.gradu.infou.Config.BaseResponse;
 import com.gradu.infou.Domain.Dto.Controller.AddInfouReqDto;
 import com.gradu.infou.Domain.Dto.Controller.Condition;
+import com.gradu.infou.Domain.Dto.Controller.Kind;
 import com.gradu.infou.Domain.Dto.Service.InfouDetailResDto;
 import com.gradu.infou.Domain.Dto.Service.SearchLectureResDto;
 import com.gradu.infou.Domain.Entity.InfouDocument;
@@ -153,7 +154,7 @@ public class InfouController {
             }
     )
     @GetMapping("/search")
-    public BaseResponse<List<SearchLectureResDto>> InfouSearch(@PathParam("keyword") String keyword, @PathParam("condition") Condition condition, @PageableDefault(sort="score", direction = Sort.Direction.DESC) Pageable pageable) throws IOException {
+    public BaseResponse<List<SearchLectureResDto>> InfouSearch(@PathParam("keyword") String keyword, @PathParam("condition") Kind condition, @PageableDefault(sort="score", direction = Sort.Direction.DESC) Pageable pageable) throws IOException {
 
         List<SearchLectureResDto> infouDocuments = infouService.searchInfou(keyword, condition, pageable);
 
