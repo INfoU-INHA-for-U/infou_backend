@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface NoticeBookmarkRepository extends ElasticsearchRepository<NoticeBookmarkDocument, String>, CrudRepository<NoticeBookmarkDocument, String> {
     Page<NoticeBookmarkDocument> findAllByUserId(String userId, Pageable pageable);
     Page<NoticeBookmarkDocument> findAllByUserIdAndAndNoticeTagsContaining(String userId, String tags, Pageable pageable);
-
     Optional<NoticeBookmarkDocument> findByUserIdAndNoticeDocumentId(String userId, String noticeDocumentId);
+    Page<NoticeBookmarkDocument> findAllByUserIdAndNoticeTitleContaining(String title, String userId, Pageable pageable);
 
 }
