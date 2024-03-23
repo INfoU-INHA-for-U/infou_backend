@@ -98,8 +98,9 @@ public class NoticeController {
             }
     )
     @GetMapping("/search")
-    public BaseResponse NoticeBookMarkList(){
-        return new BaseResponse();
+    public BaseResponse NoticeSearch(@RequestParam String keyword, @RequestParam String type, Pageable pageable){
+        Page<NoticeDocument> res = noticeService.searchNotice(keyword, type, pageable);
+        return new BaseResponse(res);
     }
 //    @Operation(
 //            summary = "즐겨찾기 공지사항 제목 검색",

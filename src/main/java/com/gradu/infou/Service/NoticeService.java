@@ -78,4 +78,9 @@ public class NoticeService {
         NoticeBookmarkDocument noticeBookmarkDocument = NoticeBookmarkDocument.toNoticeBookmark(user, noticeDocument);
         noticeBookmarkRepository.save(noticeBookmarkDocument);
     }
+
+    public Page<NoticeDocument> searchNotice(String keyword, String type, Pageable pageable){
+        Page<NoticeDocument> res = noticeRepository.findAllByTitleContainingAndType(keyword, type, pageable);
+        return res;
+    }
 }
