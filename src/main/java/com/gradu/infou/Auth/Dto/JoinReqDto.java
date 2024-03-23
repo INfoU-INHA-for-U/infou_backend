@@ -5,6 +5,9 @@ import com.gradu.infou.Domain.Entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Builder
 @AllArgsConstructor
@@ -17,16 +20,23 @@ public class JoinReqDto {
     private String email;
     private String name;
     private String grade;
+    private String major;
     //private Role role;
 
 
     public User toUserEntity(){
+        List<String> noticeList=new ArrayList<>();
+        noticeList.add("인하대학교");
+        noticeList.add(major);
+
         return User.builder()
                 .authId(authId)
                 .email(email)
                 .name(name)
                 .role(Role.USER.name())
                 .grade(grade)
+                .major(major)
+                .selectNotice(noticeList)
                 .reward(0L)
                 .build();
     }

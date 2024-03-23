@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -20,6 +23,11 @@ public class User extends BaseTimeEntity {
     private String authId;
     @Column(nullable = false)
     private String grade;
+    @Column(nullable = false)
+    private String major;
+    @Column(nullable = false)
+    @ElementCollection
+    private List<String> selectNotice=new ArrayList<>();
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)

@@ -56,7 +56,10 @@ public enum BaseResponseStatus {
     //Page
     SIZE_TOO_BIG(false, 2102,"page의 size 값이 너무 큽니다."),
 
-
+    //Notice
+    NOT_TYPE_EXIST_TAG(false, 2200, "tag가 있을 경우, type도 같이 보내줘야 합니다."),
+    NOTICE_NOT_FOUND(false, 2200, "공지사항을 찾을 수 없습니다."),
+    BOOKMARK_NOTICE_EXIST(false, 2200, "이미 존재하는 북마크입니다."),
 
     /**
      * 3000 : Response 오류
