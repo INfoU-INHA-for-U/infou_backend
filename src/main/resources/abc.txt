@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="30 seconds">
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>18.119.125.26:9600</destination>
+        <destination>165.246.44.237:9601</destination>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder"></encoder>
     </appender>
 

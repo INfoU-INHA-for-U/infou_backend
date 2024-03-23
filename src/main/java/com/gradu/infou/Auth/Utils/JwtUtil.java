@@ -13,12 +13,12 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    public String getId(String token, String secretKey){
+    public static String getId(String token, String secretKey){
         return Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().get("id", String.class);
     }
 
 
-    public boolean validToken(String token, String secretKey){
+    public static boolean validToken(String token, String secretKey){
         try{
             Jwts.parser().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getExpiration().before(new Date());
             return true;
@@ -37,7 +37,7 @@ public class JwtUtil {
         return false;
     }
 
-    public String createJwt(Long id, Long expiredMs, String secretKey){
+    public static String createJwt(Long id, Long expiredMs, String secretKey){
         return Jwts.builder()
                 .claim("id", id.toString())
                 .issuedAt(new Date(System.currentTimeMillis()))
@@ -46,7 +46,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String resolveToken(HttpServletRequest request){
+    public static String resolveToken(HttpServletRequest request){
 
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 

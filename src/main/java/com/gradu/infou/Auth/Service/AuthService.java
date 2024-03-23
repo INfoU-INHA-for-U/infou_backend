@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.Duration;
+import java.util.Optional;
 
 import static com.gradu.infou.Config.BaseResponseStatus.*;
 
@@ -141,6 +142,7 @@ public class AuthService {
             throw new RuntimeException(e);
         }
     }
+
 
 
     private boolean isPresentUser(String clientId) {

@@ -50,6 +50,7 @@ public class PortalDocument {
     @Field(name = "option_2", type = FieldType.Double)
     private Double option_2;
 
+
     @Field(name = "option_3", type = FieldType.Double)
     private Double option_3;
 
