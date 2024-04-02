@@ -9,6 +9,7 @@ import com.gradu.infou.Domain.Dto.Service.NoticeListResDto;
 import com.gradu.infou.Domain.Entity.NoticeBookmarkDocument;
 import com.gradu.infou.Domain.Entity.NoticeDocument;
 import com.gradu.infou.Repository.NoticeBookmarkRepository;
+import com.gradu.infou.Service.LogService;
 import com.gradu.infou.Service.NoticeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -33,6 +35,8 @@ import java.util.List;
 @Tag(name = "Notice", description = "notice 관련 api입니다.")
 public class NoticeController {
     private final NoticeService noticeService;
+    private final LogService logService;
+
     @Operation(
             summary = "모든 공지사항 조회",
             description = "모든 공지사항을 조회하는 api입니다. type이 null, tag가 값이 있는 경우는 안됩니다.",
@@ -117,6 +121,38 @@ public class NoticeController {
         Page<NoticeBookmarkDocument> res = noticeService.searchNoticeBookmark(request, keyword, pageable);
         return new BaseResponse(res);
     }
+
+
+    @Operation(
+            summary = "공지사항 log",
+            description = "공지사항을 조회할 때 log를 기록하는 api입니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "successful operation", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
+                    })
+            }
+    )
+    @PostMapping("/log")
+    public BaseResponse NoticeBookMarkList(HttpServletRequest request, @RequestBody String noticeId){
+        logService.addLog(request,"notice",noticeId);
+        return new BaseResponse();
+    }
+
+    @Operation(
+            summary = "추천 공지사항 목록 조회",
+            description = "사용자와 비슷한 공지사항을 조회하는 api입니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "successful operation", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
+                    })
+            }
+    )
+    @GetMapping("/recommend")
+    public BaseResponse NoticeRecommendList(HttpServletRequest httpServletRequest, Pageable pageable) throws IOException {
+        Page<NoticeDocument> result = noticeService.recommendNoticeList(httpServletRequest, pageable);
+        return new BaseResponse(result);
+    }
+
 //    @Operation(
 //            summary = "즐겨찾기 공지사항 조회",
 //            description = "즐겨찾기한 공지사항을 조회하는 api입니다.",

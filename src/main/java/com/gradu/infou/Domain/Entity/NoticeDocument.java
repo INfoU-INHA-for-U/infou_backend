@@ -24,9 +24,9 @@ public class NoticeDocument {
     private String title;
     @Field(name = "date",  format = DateFormat.custom, pattern = "uuuu-MM-dd'T'HH:mm:ss", type = FieldType.Date)
     private LocalDateTime date;
-    @Field(name="href", type = FieldType.Text)
+    @Field(name="link", type = FieldType.Text)
     private String href;
-    @Field(name="type", type = FieldType.Text)
+    @Field(name="department", type = FieldType.Text)
     private String type;
     @Field(name="tags", type = FieldType.Text)
     private String tags;

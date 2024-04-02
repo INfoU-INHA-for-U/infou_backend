@@ -48,6 +48,9 @@ public enum BaseResponseStatus {
     NOT_FOUND_PORTAL_FROM_PROFESSOR_NAME(false, 2020, "입력한 교수명으로 강의를 찾을 수 없습니다."),
     NOT_FOUND_PROFESSOR_FROM_PORTAL(false, 2021, "입력한 강의로 교수를 찾을 수 없습니다."),
 
+    // infous
+    NOT_FOUND_INFOU(false, 2030, "강의를 찾을 수 없습니다."),
+    NOT_FOUND_NOTICE(false, 2030, "공지사항을 찾을 수 없습니다."),
 
     // Enum
     CONDITION_INVALID(false, 2100, "condition이 유효하지 않습니다.(name or professor)"),

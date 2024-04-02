@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,8 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final NoticeBookmarkRepository noticeBookmarkRepository;
     private final UserService userService;
+    private final ElasticQueryService elasticQueryService;
+
     public NoticeListResDto noticeDocumentsList(HttpServletRequest request, String type, String tag, Pageable pageable){
         Page<NoticeDocument> noticeDocumentList=null;
         User user = userService.findUserByRequest(request);
@@ -88,5 +91,11 @@ public class NoticeService {
         User user = userService.findUserByRequest(request);
         Page<NoticeBookmarkDocument> res = noticeBookmarkRepository.findAllByUserIdAndNoticeTitleContaining(user.getId().toString(), keyword, pageable);
         return res;
+    }
+
+    public Page<NoticeDocument> recommendNoticeList(HttpServletRequest request, Pageable pageable) throws IOException {
+        User user = userService.findUserByRequest(request);
+        Page<NoticeDocument> result = elasticQueryService.searchNoticeRecommend(user.getGrade(), user.getMajor(), "notice", pageable);
+        return result;
     }
 }

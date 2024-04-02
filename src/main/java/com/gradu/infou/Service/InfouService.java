@@ -56,6 +56,8 @@ public class InfouService {
     private final InfouProcessRepository infouProcessRepository;
     private final RestHighLevelClient elasticsearchClient;
     private final UserRepository userRepository;
+    private final LogService logService;
+    private final UserService userService;
     private final JwtUtil jwtUtil;
     private String INDEX="lecture_infou";
     @Value("${jwt.secret.access}")
@@ -103,7 +105,7 @@ public class InfouService {
         }
     }
 
-    public InfouDetailResDto detailInfou(String academicNumber, String professorName, Pageable pageable) throws IOException {
+    public InfouDetailResDto detailInfou(HttpServletRequest request, String academicNumber, String professorName, Pageable pageable) throws IOException {
         //infou 합계 데이터
         SearchResponse searchResponse = searchLecturesWithAggregations(academicNumber, professorName);
 
@@ -114,6 +116,9 @@ public class InfouService {
 
         //infou 강의평
         Page<InfouDocument> infouDocuments = infouRepository.findByAcademicNumberAndProfessorName(academicNumber, professorName, pageable);
+
+        InfouProcessDocument infouProcessDocument = infouProcessRepository.findByAcademicNumberAndProfessorName(academicNumber, professorName);
+        logService.addLog(request,"infou",infouProcessDocument.getId());
 
         return InfouDetailResDto.fromEntity(total, levelRatio, skillRatio, gradeRatio, infouDocuments);
     }
@@ -131,6 +136,12 @@ public class InfouService {
     public Page<InfouDocument> recentInfou(Pageable pageable){
         Page<InfouDocument> all = infouRepository.findAll(pageable);
         return all;
+    }
+
+    public Page<InfouProcessDocument> recommendInfouList(HttpServletRequest request, Pageable pageable) throws IOException {
+        User user = userService.findUserByRequest(request);
+        Page<InfouProcessDocument> infouProcessDocuments = elasticQueryService.searchRecommend(user.getGrade(), user.getMajor(), "infou", pageable);
+        return infouProcessDocuments;
     }
 
 

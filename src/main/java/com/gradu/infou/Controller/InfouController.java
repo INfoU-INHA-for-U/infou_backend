@@ -56,7 +56,7 @@ public class InfouController {
     }
 
     @Operation(
-            summary = "인기 교양 목록 조회",
+            summary = "인기 교양 목록 조회(수정 필요)",
             description = "인기 교양을 목록을 조회하는 api입니다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
@@ -89,7 +89,7 @@ public class InfouController {
     }
 
     @Operation(
-            summary = "추천 강의평(미완성)",
+            summary = "추천 강의평",
             description = "나와 비슷한 사용자가 많이 조회한 강의 목록 api입니다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
@@ -98,8 +98,9 @@ public class InfouController {
             }
     )
     @GetMapping("/recommend")
-    public BaseResponse RecommendInfouList(){
-        return new BaseResponse();
+    public BaseResponse RecommendInfouList(HttpServletRequest httpServletRequest, Pageable pageable) throws IOException {
+        Page<InfouProcessDocument> infouProcessDocuments = infouService.recommendInfouList(httpServletRequest, pageable);
+        return new BaseResponse(infouProcessDocuments);
     }
 
     @Operation(
@@ -135,8 +136,8 @@ public class InfouController {
             }
     )
     @GetMapping("/details")
-    public BaseResponse<InfouDetailResDto> InfouDetails(@PathParam("academic_number") String academicNumber, @PathParam("professor_name") String professorName, Pageable pageable) throws IOException {
-        InfouDetailResDto infouDocuments = infouService.detailInfou(academicNumber, professorName, pageable);
+    public BaseResponse<InfouDetailResDto> InfouDetails(HttpServletRequest request, @PathParam("academic_number") String academicNumber, @PathParam("professor_name") String professorName, Pageable pageable) throws IOException {
+        InfouDetailResDto infouDocuments = infouService.detailInfou(request, academicNumber, professorName, pageable);
         return new BaseResponse(infouDocuments);
     }
 
