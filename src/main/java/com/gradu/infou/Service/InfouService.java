@@ -138,9 +138,9 @@ public class InfouService {
         return all;
     }
 
-    public List<InfouProcessDocument> recommendInfouList(HttpServletRequest request, Pageable pageable) throws IOException {
+    public Page<InfouProcessDocument> recommendInfouList(HttpServletRequest request, Pageable pageable) throws IOException {
         User user = userService.findUserByRequest(request);
-        List<InfouProcessDocument> infouProcessDocuments = elasticQueryService.searchRecommend(user.getGrade(), user.getMajor(), "infou", pageable);
+        Page<InfouProcessDocument> infouProcessDocuments = elasticQueryService.searchRecommend(user.getGrade(), user.getMajor(), "infou", pageable);
         return infouProcessDocuments;
     }
 

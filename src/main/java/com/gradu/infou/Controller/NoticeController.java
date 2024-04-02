@@ -25,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -131,10 +132,25 @@ public class NoticeController {
                     })
             }
     )
-    @GetMapping("/c")
-    public BaseResponse NoticeBookMarkList(HttpServletRequest request, String noticeId){
+    @PostMapping("/log")
+    public BaseResponse NoticeBookMarkList(HttpServletRequest request, @RequestBody String noticeId){
         logService.addLog(request,"notice",noticeId);
         return new BaseResponse();
+    }
+
+    @Operation(
+            summary = "추천 공지사항 목록 조회",
+            description = "사용자와 비슷한 공지사항을 조회하는 api입니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "successful operation", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
+                    })
+            }
+    )
+    @GetMapping("/recommend")
+    public BaseResponse NoticeRecommendList(HttpServletRequest httpServletRequest, Pageable pageable) throws IOException {
+        Page<NoticeDocument> result = noticeService.recommendNoticeList(httpServletRequest, pageable);
+        return new BaseResponse(result);
     }
 
 //    @Operation(

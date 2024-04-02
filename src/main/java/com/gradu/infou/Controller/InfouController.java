@@ -56,7 +56,7 @@ public class InfouController {
     }
 
     @Operation(
-            summary = "인기 교양 목록 조회",
+            summary = "인기 교양 목록 조회(수정 필요)",
             description = "인기 교양을 목록을 조회하는 api입니다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
@@ -99,7 +99,7 @@ public class InfouController {
     )
     @GetMapping("/recommend")
     public BaseResponse RecommendInfouList(HttpServletRequest httpServletRequest, Pageable pageable) throws IOException {
-        List<InfouProcessDocument> infouProcessDocuments = infouService.recommendInfouList(httpServletRequest, pageable);
+        Page<InfouProcessDocument> infouProcessDocuments = infouService.recommendInfouList(httpServletRequest, pageable);
         return new BaseResponse(infouProcessDocuments);
     }
 
