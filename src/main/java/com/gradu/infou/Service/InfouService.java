@@ -10,7 +10,9 @@ import com.gradu.infou.Domain.Dto.Controller.PortalSearchAggregationResult;
 import com.gradu.infou.Domain.Dto.Service.InfouDetailResDto;
 import com.gradu.infou.Domain.Dto.Service.SearchLectureResDto;
 import com.gradu.infou.Domain.Entity.InfouDocument;
+import com.gradu.infou.Domain.Entity.InfouProcessDocument;
 import com.gradu.infou.Domain.Entity.User;
+import com.gradu.infou.Repository.InfouProcessRepository;
 import com.gradu.infou.Repository.InfouRepository;
 import com.gradu.infou.Repository.UserRepository;
 import com.gradu.infou.converter.InfouConverter;
@@ -51,6 +53,7 @@ import java.util.stream.Collectors;
 @Service
 public class InfouService {
     private final InfouRepository infouRepository;
+    private final InfouProcessRepository infouProcessRepository;
     private final RestHighLevelClient elasticsearchClient;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
@@ -60,8 +63,7 @@ public class InfouService {
     private final ElasticQueryService elasticQueryService;
 
 
-    @Transactional(readOnly = true)
-    public void addInfou(HttpServletRequest request, AddInfouReqDto addInfouReqDto){
+    public InfouDocument addInfou(HttpServletRequest request, AddInfouReqDto addInfouReqDto){
         String token = jwtUtil.resolveToken(request);
         String id = jwtUtil.getId(token, secretAccessKey);
         Long idL = Long.parseLong(id);
@@ -70,13 +72,35 @@ public class InfouService {
         //강의평 작성 xss 보안 추가 필요
         InfouDocument infouDocument = InfouConverter.toInfouDocument(id, addInfouReqDto);
         infouRepository.save(infouDocument);
+
+        return infouDocument;
     }
 
-    public List<SearchLectureResDto> searchInfou(String keyword, Kind condition, Pageable pageable) throws IOException {
+    @Transactional
+    public void addInfouProcess(InfouDocument infouDocument){
+        InfouProcessDocument infouProcessDocument = infouProcessRepository.findByAcademicNumberAndProfessorName(infouDocument.getAcademicNumber(), infouDocument.getProfessorName());
+        if(infouProcessDocument==null){
+            InfouProcessDocument newInfouProcessDocument = InfouProcessDocument.toInfouProcessDocument(infouDocument, infouDocument.getScore(), infouDocument.getScore(),1);
+            infouProcessRepository.save(newInfouProcessDocument);
+        }
+        else{
+            infouProcessDocument.setCount(infouProcessDocument.getCount()+1);
+            infouProcessDocument.setSumValue(infouProcessDocument.getSumValue()+infouDocument.getScore());
+            infouProcessDocument.setAverageValue(infouProcessDocument.getSumValue()/ infouProcessDocument.getCount());
+            infouProcessRepository.save(infouProcessDocument);
+        }
+    }
 
-        List<SearchLectureResDto> lectureResults = elasticQueryService.searchLecture(keyword, condition, pageable, "lecture_infou");
+    public Page<InfouProcessDocument> searchInfou(String keyword, Kind condition, Pageable pageable) throws IOException {
 
-        return lectureResults;
+        switch (condition){
+            case department:
+                return infouProcessRepository.findAllByDepartment(keyword, pageable);
+            case lecture_name:
+                return infouProcessRepository.findAllByLectureName(keyword, pageable);
+            default:
+                return infouProcessRepository.findAllByProfessorName(keyword, pageable);
+        }
     }
 
     public InfouDetailResDto detailInfou(String academicNumber, String professorName, Pageable pageable) throws IOException {
