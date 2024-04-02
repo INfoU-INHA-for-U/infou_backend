@@ -7,6 +7,8 @@ import com.gradu.infou.Domain.Dto.Controller.Kind;
 import com.gradu.infou.Domain.Dto.Service.InfouDetailResDto;
 import com.gradu.infou.Domain.Dto.Service.SearchLectureResDto;
 import com.gradu.infou.Domain.Entity.InfouDocument;
+import com.gradu.infou.Domain.Entity.InfouProcessDocument;
+import com.gradu.infou.Service.InFouFacadeService;
 import com.gradu.infou.Service.InfouService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -34,6 +37,7 @@ import java.util.List;
 @Tag(name = "INfoU", description = "infou 관련 api입니다.")
 public class InfouController {
     private final InfouService infouService;
+    private final InFouFacadeService inFouFacadeService;
 
     @Operation(
             summary = "강의평 작성",
@@ -46,7 +50,7 @@ public class InfouController {
     )
     @PostMapping
     public BaseResponse InfouAdd(HttpServletRequest httpServletRequest, @RequestBody AddInfouReqDto addInfouReqDto){
-        infouService.addInfou(httpServletRequest, addInfouReqDto);
+        inFouFacadeService.addFacadeInfou(httpServletRequest, addInfouReqDto);
 
         return new BaseResponse();
     }
@@ -154,9 +158,15 @@ public class InfouController {
             }
     )
     @GetMapping("/search")
-    public BaseResponse<List<SearchLectureResDto>> InfouSearch(@PathParam("keyword") String keyword, @PathParam("condition") Kind condition, @PageableDefault(sort="score", direction = Sort.Direction.DESC) Pageable pageable) throws IOException {
+    public BaseResponse<Page<InfouProcessDocument>> InfouSearch(@PathParam("keyword") String keyword, @PathParam("condition") Kind condition, @PageableDefault(sort="average_value", direction = Sort.Direction.DESC) Pageable pageable) throws IOException {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
 
-        List<SearchLectureResDto> infouDocuments = infouService.searchInfou(keyword, condition, pageable);
+        Page<InfouProcessDocument> infouDocuments = infouService.searchInfou(keyword, condition, pageable);
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
+        System.out.println("infou 검색 코드 실행 시간 (s): " + stopWatch.getTotalTimeSeconds());
 
         return new BaseResponse<>(infouDocuments);
     }
