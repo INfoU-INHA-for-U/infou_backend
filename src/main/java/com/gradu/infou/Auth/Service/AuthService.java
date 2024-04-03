@@ -130,6 +130,10 @@ public class AuthService {
 
     }
 
+    public void duplicateNick(String name){
+        userRepository.findByName(name).ifPresent(e->{throw new BaseException(USER_NICK_DUPLICATE);});
+    }
+
     public static void outputStream(HttpServletResponse response, BaseResponseStatus status){
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

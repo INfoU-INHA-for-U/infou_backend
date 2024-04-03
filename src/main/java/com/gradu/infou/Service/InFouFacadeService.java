@@ -13,6 +13,7 @@ import org.springframework.util.StopWatch;
 public class InFouFacadeService {
 
     private final InfouService infouService;
+    private final RewardService rewardService;
 
     @Transactional
     public void addFacadeInfou(HttpServletRequest request, AddInfouReqDto addInfouReqDto){
@@ -22,6 +23,7 @@ public class InFouFacadeService {
         InfouDocument infouDocument = infouService.addInfou(request, addInfouReqDto);
         infouService.addInfouProcess(infouDocument);
         //포인트
+        rewardService.increaseReward(request);
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());

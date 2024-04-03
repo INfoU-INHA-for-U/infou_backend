@@ -32,6 +32,7 @@ public enum BaseResponseStatus {
     USERS_EMPTY_PASSWORD(false, 2011, "유저 비밀번호 값을 확인해주세요."),
     USERS_NOT_FOUND(false, 2012, "유저를 찾을 수 없습니다."),
     USER_ALREADY_EXIST(false, 2013, "이미 존재하는 유저입니다."),
+    USER_NICK_DUPLICATE(false, 2014, "이미 존재하는 닉네임입니다."),
 
 
     // [POST] /users

@@ -38,6 +38,7 @@ public class JoinReqDto {
                 .major(major)
                 .selectNotice(noticeList)
                 .reward(0L)
+                .review(0L)
                 .build();
     }
 }

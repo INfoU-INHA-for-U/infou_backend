@@ -65,11 +65,13 @@ public class InfouService {
     private final ElasticQueryService elasticQueryService;
 
 
+    @Transactional
     public InfouDocument addInfou(HttpServletRequest request, AddInfouReqDto addInfouReqDto){
         String token = jwtUtil.resolveToken(request);
         String id = jwtUtil.getId(token, secretAccessKey);
         Long idL = Long.parseLong(id);
         User user = userRepository.findById(idL).orElseThrow(() -> new BaseException(BaseResponseStatus.USERS_NOT_FOUND));
+        user.setReview(user.getReview()+1);
 
         //강의평 작성 xss 보안 추가 필요
         InfouDocument infouDocument = InfouConverter.toInfouDocument(id, addInfouReqDto);

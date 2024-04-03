@@ -1,10 +1,7 @@
 package com.gradu.infou.Domain.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
@@ -12,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -37,7 +35,9 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     @ColumnDefault("0")
     private Long reward;
-
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private Long review;
     public void modifyReward(boolean status, Long value){
         if(status==true) reward += value;
         else reward -= value;
