@@ -67,4 +67,22 @@ public class AuthController {
         return new BaseResponse<>(authService.refreshToken(req, res));
     }
 
+    @Operation(
+            summary = "닉네임 중복 검사",
+            description = "닉네임을 중복 검사하는 api입니다. \n\n",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "successful operation", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
+                    })
+            },
+            parameters = {
+                    @Parameter(name="nick", description = "중복 검사할 닉네임을 적어주세요", required = true)
+            }
+    )
+    @GetMapping("")
+    private BaseResponse<String> nickDuplicate(@RequestParam("nick") String nick){
+        authService.duplicateNick(nick);
+        return new BaseResponse();
+    }
+
 }
