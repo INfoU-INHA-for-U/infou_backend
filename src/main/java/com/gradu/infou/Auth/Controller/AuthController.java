@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@Tag(name = "Auth", description = "로그인/회원가입 관련 api입니다. \n logout을 할 때는 /api/v1/auth/logout을 하면 됩니다.")
+@Tag(name = "0. Auth", description = "로그인/회원가입 관련 api입니다. \n logout을 할 때는 /api/v1/auth/logout을 하면 됩니다.")
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     private final AuthService authService;

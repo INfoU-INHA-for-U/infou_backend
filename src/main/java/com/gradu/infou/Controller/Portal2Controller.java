@@ -27,7 +27,7 @@ import java.util.List;
 @RequestMapping("/api/v2/portals")
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Portal2", description = "infou 서비스의 portal 강의평 관련입니다.")
+@Tag(name = "2. Portal2", description = "infou 서비스의 portal 강의평 관련입니다.")
 public class Portal2Controller {
     private final Portal2Service portal2Service;
 
@@ -54,15 +54,17 @@ public class Portal2Controller {
 
     @Operation(
             summary = "강의평 검색 api",
-            description = "강의평을 검색하는 api입니다. \n\n" +
-                    "keyword: 검색어 \n\n"+
-                    "pageable의 sort: {option_1,asc}/{option_2,desc}/{option_3,asc}/{option_4,asc}/{option_5,asc} \n\n {option_1,asc}: option_1을 기준으로 오름차순 정렬합니다. \n\n"+
-                    "ex) \"sort\": [\"option_1,asc\"]"
-            ,
+            description = "강의평을 검색하는 api입니다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
                     })
+            },
+            parameters = {
+                    @Parameter(name="keyword", description = "검색어를 입력합니다."),
+                    @Parameter(name="condition", description = "professor_name: 교수 이름 검색, lecture_name: 과목 이름 검색, department: 학과 이름 검색"),
+                    @Parameter(name="pageable", description = "sort: {option_1,asc}/{option_2,desc}/{option_3,asc}/{option_4,asc}/{option_5,asc} \n\n {option_1,asc}: option_1을 기준으로 오름차순 정렬합니다. \n\n"+
+                            "ex) \"sort\": [\"option_1,asc\"]")
             }
     )
     @GetMapping("/search")
