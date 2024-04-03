@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.gradu.infou.Config.BaseResponseStatus.NOT_FOUND_INFOU;
+import static com.gradu.infou.Config.BaseResponseStatus.NOT_FOUND_NOTICE;
 
 @Slf4j
 @Service
@@ -229,7 +230,7 @@ public class ElasticQueryService {
             if(i++<size*page) continue;
             String key = bucket.getKeyAsString(); // 버킷의 키
 
-            NoticeDocument processDocument = noticeRepository.findById(key).orElseThrow(()->new BaseException(NOT_FOUND_INFOU));
+            NoticeDocument processDocument = noticeRepository.findById(key).orElseThrow(()->new BaseException(NOT_FOUND_NOTICE));
 
             results.add(processDocument);
         }

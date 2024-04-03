@@ -34,7 +34,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/infou")
-@Tag(name = "INfoU", description = "infou 관련 api입니다.")
+@Tag(name = "3. INfoU", description = "infou 관련 api입니다.")
 public class InfouController {
     private final InfouService infouService;
     private final InFouFacadeService inFouFacadeService;
@@ -90,15 +90,18 @@ public class InfouController {
 
     @Operation(
             summary = "추천 강의평",
-            description = "나와 비슷한 사용자가 많이 조회한 강의 목록 api입니다.",
+            description = "나와 비슷한 사용자가 많이 조회한 강의 목록 api입니다. \n\n 로그 기록에 따라 사용자와 같은 학년, 같은 학과의 사용자들이 본 강의평을 보여줍니다. \n\n log는 강의평 상세 조회 api에서 기록됩니다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
                     })
+            },
+            parameters = {
+                    @Parameter(name="pageable", description = "sort: {count,asc}/{count,desc} \n\n ex) \"sort\": [\"count,asc\"]", required = true)
             }
     )
     @GetMapping("/recommend")
-    public BaseResponse RecommendInfouList(HttpServletRequest httpServletRequest, Pageable pageable) throws IOException {
+    public BaseResponse RecommendInfouList(HttpServletRequest httpServletRequest, @PageableDefault(sort="count", direction = Sort.Direction.DESC) Pageable pageable) throws IOException {
         Page<InfouProcessDocument> infouProcessDocuments = infouService.recommendInfouList(httpServletRequest, pageable);
         return new BaseResponse(infouProcessDocuments);
     }
@@ -112,7 +115,7 @@ public class InfouController {
                     })
             },
             parameters = {
-                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. (sort: 비워두면 시간 기준으로 내림차순 정렬됩니다.)", required = true)
+                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. \n\n sort: {timestamp,asc}/{timestamp,desc} \n\n ex) \"sort\": [\"timestamp,asc\"]\", default: {timestamp,desc})", required = true)
             }
     )
     @GetMapping("/recent")
@@ -132,7 +135,7 @@ public class InfouController {
             parameters = {
                     @Parameter(name="academicNumber", description = "학수번호를 입력해주세요.", required = true),
                     @Parameter(name="professorName", description = "교수명 입력합니다.", required = true),
-                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. \n\n size: infouDocuments의 개수를 설정합니다. \n\n sort: 정렬하고 싶은 속성,정렬 기준(ex, {score,desc},{skill,asc},{level,desc}, \n\n score: 추천 점수, skill: 강의력, level: 난이도", required = true)
+                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. \n\n size: infouDocuments의 개수를 설정합니다. \n\n sort: 정렬하고 싶은 속성, 정렬 기준(ex, {score,desc},{skill,asc},{level,desc}, \n\n score: 추천 점수, skill: 강의력, level: 난이도", required = true)
             }
     )
     @GetMapping("/details")
@@ -143,7 +146,7 @@ public class InfouController {
 
     @Operation(
             summary = "infou 강의평 검색",
-            description = "infou 강의평 검색 api입니다.",
+            description = "infou 강의평 검색 api입니다. \n\n 학수번호와 교수님 기준으로 그룹화된 강의평 목록이 보여집니다. \n\n",
             responses = {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
@@ -152,10 +155,7 @@ public class InfouController {
             parameters = {
                     @Parameter(name="keyword", description = "검색어를 입력해주세요.", required = true),
                     @Parameter(name="condition", description = "검색할 것을 입력합니다. \n\n (학과 검색: depart, 교수 검색: professor, 강의명 검색: lecture)", required = true),
-                    @Parameter(name="pageable",
-                            description = "강의평을 검색하는 api입니다. \n\n" +
-                                    "keyword: 검색어 \n\n"+
-                                    "pageable의 sort: {score,asc}/{score,desc}", required = true)
+                    @Parameter(name="pageable", description = "pageable의 sort: {average_value,asc}/{average_value,desc} \n\n ex) \"sort\": [\"average_value,asc\"]", required = true)
             }
     )
     @GetMapping("/search")

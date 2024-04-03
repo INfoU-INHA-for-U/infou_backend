@@ -3,6 +3,7 @@ package com.gradu.infou.logstashTest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gradu.infou.Config.exception.BaseException;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import static com.gradu.infou.Config.BaseResponseStatus.RESPONSE_ERROR;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Test-Log", description = "log 관련 test api입니다.")
 public class LogController {
 
     private final ElasticSearchItemsRepository elasticSearchItemsRepository;

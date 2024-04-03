@@ -4,6 +4,7 @@ import com.gradu.infou.Config.BaseResponse;
 import com.gradu.infou.Config.BaseResponseStatus;
 import com.gradu.infou.Config.exception.BaseException;
 import com.gradu.infou.Domain.Dto.Controller.AddInfouReqDto;
+import com.gradu.infou.Domain.Dto.Controller.NoticeBookMarkReqDto;
 import com.gradu.infou.Domain.Dto.Controller.NoticeListReqDto;
 import com.gradu.infou.Domain.Dto.Service.NoticeListResDto;
 import com.gradu.infou.Domain.Entity.NoticeBookmarkDocument;
@@ -23,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -32,7 +35,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/notices")
-@Tag(name = "Notice", description = "notice 관련 api입니다.")
+@Tag(name = "4. Notice", description = "notice 관련 api입니다.")
 public class NoticeController {
     private final NoticeService noticeService;
     private final LogService logService;
@@ -46,7 +49,7 @@ public class NoticeController {
                     })
             },
             parameters = {
-                    @Parameter(name="type", description = "nullable, 공지사항 유형입니다. ex) 인하대, 컴퓨터공학과", required = false),
+                    @Parameter(name="type", description = "nullable, 공지사항 유형입니다. ex) 인하대학교, 컴퓨터공학과", required = false),
                     @Parameter(name="tag", description = "nullable, tag입니다. ex) 장학, 신청", required = false),
                     @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. (sort 예시: {date,desc}, {date,asc})", required = true)
             }
@@ -68,10 +71,14 @@ public class NoticeController {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
                     })
+            },
+            parameters = {
+                    @Parameter(name="tag", description = "nullable, tag입니다. ex) 장학, 신청", required = false),
+                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. sort: {time,desc}/{time,asc}/{notice_date,asc)/{notice_date,desc})", required = true)
             }
     )
     @GetMapping("/bookmark")
-    public BaseResponse<NoticeBookmarkDocument> NoticeBookMarkList(HttpServletRequest request, @RequestParam(required = false) String tag, Pageable pageable){
+    public BaseResponse<NoticeBookmarkDocument> NoticeBookMarkList(HttpServletRequest request, @RequestParam(required = false) String tag, @PageableDefault(sort="date", direction = Sort.Direction.DESC) Pageable pageable){
         Page<NoticeBookmarkDocument> res = noticeService.BookmarkList(request, tag, pageable);
         log.info(String.valueOf(res.getSize()));
         return new BaseResponse(res);
@@ -87,8 +94,8 @@ public class NoticeController {
             }
     )
     @PostMapping("/bookmark")
-    public BaseResponse NoticeBookMarkAdd(HttpServletRequest request, String noticeId){
-        noticeService.addBookmak(request, noticeId);
+    public BaseResponse NoticeBookMarkAdd(HttpServletRequest request, @RequestBody NoticeBookMarkReqDto reqDto){
+        noticeService.addBookmak(request, reqDto.getNoticeId());
         return new BaseResponse();
     }
 
@@ -99,6 +106,11 @@ public class NoticeController {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
                     })
+            },
+            parameters = {
+                    @Parameter(name="keyword", description = "검색어입니다(제목 검색)", required = true),
+                    @Parameter(name="type", description = "학과 ex) 인하대학교, 컴퓨터공학과 등", required = true),
+                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. sort: {date,desc}/{date,asc}", required = true)
             }
     )
     @GetMapping("/search")
@@ -114,6 +126,10 @@ public class NoticeController {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
                     })
+            },
+            parameters = {
+                    @Parameter(name="keyword", description = "검색어입니다(제목 검색)", required = true),
+                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. sort: {time,desc}/{time,asc}/{notice_date,asc)/{notice_date,desc}", required = true)
             }
     )
     @GetMapping("/search/bookmark")
@@ -133,8 +149,8 @@ public class NoticeController {
             }
     )
     @PostMapping("/log")
-    public BaseResponse NoticeBookMarkList(HttpServletRequest request, @RequestBody String noticeId){
-        logService.addLog(request,"notice",noticeId);
+    public BaseResponse NoticeBookMarkList(HttpServletRequest request, @RequestBody NoticeBookMarkReqDto bookMarkReqDto){
+        logService.addLog(request,"notice",bookMarkReqDto.getNoticeId());
         return new BaseResponse();
     }
 
@@ -145,6 +161,9 @@ public class NoticeController {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
                             @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
                     })
+            },
+            parameters = {
+                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. sort: {date,desc}/{date,asc}", required = true)
             }
     )
     @GetMapping("/recommend")
