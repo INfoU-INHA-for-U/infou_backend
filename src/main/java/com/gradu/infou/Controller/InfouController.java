@@ -56,7 +56,7 @@ public class InfouController {
     }
 
     @Operation(
-            summary = "인기 교양 목록 조회(수정 필요)",
+            summary = "인기 교양 목록 조회",
             description = "인기 교양을 목록을 조회하는 api입니다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "successful operation", content = {
@@ -64,29 +64,16 @@ public class InfouController {
                     })
             },
             parameters = {
-                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. (sort: 비워두면 score 기준으로 내림차순 정렬됩니다.)", required = true)
+                    @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. (sort: 비워두면 score 기준으로 내림차순 정렬됩니다.) \n\n ex) sort: {average_value,desc}, {average_value,asc}", required = true)
             }
     )
     @GetMapping("/popular")
-    public BaseResponse<Page<InfouDocument>> popularGEDetailList(@PageableDefault(sort="score", direction = Sort.Direction.DESC) Pageable pageable){
+    public BaseResponse<Page<InfouDocument>> popularGEDetailList(@PageableDefault(sort="average_value", direction = Sort.Direction.DESC) Pageable pageable){
         Page<InfouDocument> infouDocuments = infouService.popularGE(pageable);
 
         return new BaseResponse(infouDocuments);
     }
 
-    @Operation(
-            summary = "인기 교양 상세 목록 조회(미완성)",
-            description = "인기 교양을 상세 목록을 조회하는 api입니다.",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "successful operation", content = {
-                            @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
-                    })
-            }
-    )
-    @GetMapping("popular/detail")
-    public BaseResponse popularGEList(){
-        return new BaseResponse();
-    }
 
     @Operation(
             summary = "추천 강의평",

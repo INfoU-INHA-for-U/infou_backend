@@ -130,7 +130,7 @@ public class InfouService {
         GE.add("일선");
         GE.add("교선");
         GE.add("교필");
-        Page<InfouDocument> infouDocuments = infouRepository.findByLectureTypeIn(GE, pageable);
+        Page<InfouDocument> infouDocuments = infouProcessRepository.findByLectureTypeIn(GE, pageable);
 
         return infouDocuments;
     }
