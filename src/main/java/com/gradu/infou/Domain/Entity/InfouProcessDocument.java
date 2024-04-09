@@ -17,8 +17,10 @@ public class InfouProcessDocument {
     private String id;
     @Field(name="academic_number", type = FieldType.Text)
     private String academicNumber;
-    @Field(name="lecture_type", type = FieldType.Text)
+    @Field(name="lecture_name", type = FieldType.Text)
     private String lectureName;
+    @Field(name="lecture_type", type = FieldType.Text)
+    private String lectureType;
     @Field(name="professor_name", type = FieldType.Text)
     private String professorName;
     @Field(name="department", type = FieldType.Text)
@@ -35,6 +37,7 @@ public class InfouProcessDocument {
         return InfouProcessDocument.builder()
                 .academicNumber(infouDocument.getAcademicNumber())
                 .lectureName(infouDocument.getLectureName())
+                .lectureType(infouDocument.getLectureType())
                 .professorName(infouDocument.getProfessorName())
                 .department(infouDocument.getDepartment())
                 .averageValue(score)

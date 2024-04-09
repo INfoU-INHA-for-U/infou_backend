@@ -1,11 +1,13 @@
 package com.gradu.infou.Repository;
 
+import com.gradu.infou.Domain.Entity.InfouDocument;
 import com.gradu.infou.Domain.Entity.InfouProcessDocument;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface InfouProcessRepository extends ElasticsearchRepository<InfouProcessDocument, String>, CrudRepository<InfouProcessDocument, String> {
@@ -14,4 +16,6 @@ public interface InfouProcessRepository extends ElasticsearchRepository<InfouPro
     Page<InfouProcessDocument> findAllByDepartment(String depart, Pageable pageable);
     Page<InfouProcessDocument> findAllByLectureName(String lecture, Pageable pageable);
     Page<InfouProcessDocument> findAllByProfessorName(String professor, Pageable pageable);
+    Page<InfouDocument> findByLectureTypeIn(List<String> lectureType, Pageable pageable);
+
 }
