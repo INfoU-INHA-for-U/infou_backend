@@ -1,5 +1,6 @@
 package com.gradu.infou.Controller;
 
+import com.gradu.infou.Aop.Annotation.ExeTimer;
 import com.gradu.infou.Config.BaseResponse;
 import com.gradu.infou.Config.BaseResponseStatus;
 import com.gradu.infou.Config.exception.BaseException;
@@ -54,6 +55,7 @@ public class NoticeController {
                     @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. (sort 예시: {date,desc}, {date,asc})", required = true)
             }
     )
+    @ExeTimer
     @GetMapping
     public BaseResponse NoticeList(HttpServletRequest request, @RequestParam(required = false) String type, @RequestParam(required = false) String tag, Pageable pageable){
 
@@ -77,6 +79,7 @@ public class NoticeController {
                     @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. sort: {time,desc}/{time,asc}/{notice_date,asc)/{notice_date,desc})", required = true)
             }
     )
+    @ExeTimer
     @GetMapping("/bookmark")
     public BaseResponse<NoticeBookmarkDocument> NoticeBookMarkList(HttpServletRequest request, @RequestParam(required = false) String tag, @PageableDefault(sort="date", direction = Sort.Direction.DESC) Pageable pageable){
         Page<NoticeBookmarkDocument> res = noticeService.BookmarkList(request, tag, pageable);
@@ -93,6 +96,7 @@ public class NoticeController {
                     })
             }
     )
+    @ExeTimer
     @PostMapping("/bookmark")
     public BaseResponse NoticeBookMarkAdd(HttpServletRequest request, @RequestBody NoticeBookMarkReqDto reqDto){
         noticeService.addBookmak(request, reqDto.getNoticeId());
@@ -113,6 +117,7 @@ public class NoticeController {
                     @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. sort: {date,desc}/{date,asc}", required = true)
             }
     )
+    @ExeTimer
     @GetMapping("/search")
     public BaseResponse NoticeSearch(@RequestParam String keyword, @RequestParam String type, Pageable pageable){
         Page<NoticeDocument> res = noticeService.searchNotice(keyword, type, pageable);
@@ -132,6 +137,7 @@ public class NoticeController {
                     @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. sort: {time,desc}/{time,asc}/{notice_date,asc)/{notice_date,desc}", required = true)
             }
     )
+    @ExeTimer
     @GetMapping("/search/bookmark")
     public BaseResponse NoticeBookMarkSearch(HttpServletRequest request, String keyword, Pageable pageable){
         Page<NoticeBookmarkDocument> res = noticeService.searchNoticeBookmark(request, keyword, pageable);
@@ -148,6 +154,7 @@ public class NoticeController {
                     })
             }
     )
+    @ExeTimer
     @PostMapping("/log")
     public BaseResponse NoticeBookMarkList(HttpServletRequest request, @RequestBody NoticeBookMarkReqDto bookMarkReqDto){
         logService.addLog(request,"notice",bookMarkReqDto.getNoticeId());
@@ -166,6 +173,7 @@ public class NoticeController {
                     @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. sort: {date,desc}/{date,asc}", required = true)
             }
     )
+    @ExeTimer
     @GetMapping("/recommend")
     public BaseResponse NoticeRecommendList(HttpServletRequest httpServletRequest, Pageable pageable) throws IOException {
         Page<NoticeDocument> result = noticeService.recommendNoticeList(httpServletRequest, pageable);
