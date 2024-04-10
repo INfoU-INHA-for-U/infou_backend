@@ -8,6 +8,7 @@ import com.gradu.infou.Domain.Dto.Controller.AddInfouReqDto;
 import com.gradu.infou.Domain.Dto.Controller.NoticeBookMarkReqDto;
 import com.gradu.infou.Domain.Dto.Controller.NoticeListReqDto;
 import com.gradu.infou.Domain.Dto.Service.NoticeListResDto;
+import com.gradu.infou.Domain.Entity.Mapping.NoticeMapping;
 import com.gradu.infou.Domain.Entity.NoticeBookmarkDocument;
 import com.gradu.infou.Domain.Entity.NoticeDocument;
 import com.gradu.infou.Repository.NoticeBookmarkRepository;
@@ -180,6 +181,26 @@ public class NoticeController {
         return new BaseResponse(result);
     }
 
+    @Operation(
+            summary = "공지사항 상세조회",
+            description = "공지사항을 상세 조회하는 api입니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "successful operation", content = {
+                            @Content(mediaType = "application/json", schema = @Schema(implementation = BaseResponse.class))
+                    })
+            },
+            parameters = {
+                    @Parameter(name="noticeId", description = "공지사항 id를 입력해주세요", required = true)
+            }
+    )
+    @GetMapping("/detail")
+    public BaseResponse NoticeDetail(@RequestParam String noticeId){
+        NoticeDocument noticeDocument = noticeService.noticeDetail(noticeId);
+
+        return new BaseResponse(noticeDocument);
+    }
+
+
 //    @Operation(
 //            summary = "즐겨찾기 공지사항 조회",
 //            description = "즐겨찾기한 공지사항을 조회하는 api입니다.",
@@ -193,6 +214,7 @@ public class NoticeController {
 //    public BaseResponse NoticeBookMarkList(){
 //        return new BaseResponse();
 //    }
+
 
 
 }

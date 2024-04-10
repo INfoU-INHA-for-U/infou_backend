@@ -11,7 +11,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDateTime;
 
-@Document(indexName = "notice")
+@Document(indexName = "notice_include_html_code")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -30,5 +30,7 @@ public class NoticeDocument {
     private String type;
     @Field(name="tags", type = FieldType.Text)
     private String tags;
+    @Field(name="content_code", type = FieldType.Text)
+    private String content;
 
 }
