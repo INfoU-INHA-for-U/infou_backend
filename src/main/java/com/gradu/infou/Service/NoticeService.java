@@ -5,8 +5,10 @@ import com.gradu.infou.Auth.Utils.JwtUtil;
 import com.gradu.infou.Config.BaseResponseStatus;
 import com.gradu.infou.Config.exception.BaseException;
 import com.gradu.infou.Domain.Dto.Controller.NoticeListReqDto;
+import com.gradu.infou.Domain.Dto.Service.NoticeList;
 import com.gradu.infou.Domain.Dto.Service.NoticeListResDto;
 import com.gradu.infou.Domain.Entity.InfouDocument;
+import com.gradu.infou.Domain.Entity.Mapping.NoticeMapping;
 import com.gradu.infou.Domain.Entity.NoticeBookmarkDocument;
 import com.gradu.infou.Domain.Entity.NoticeDocument;
 import com.gradu.infou.Domain.Entity.User;
@@ -25,6 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.gradu.infou.Config.BaseResponseStatus.NOT_FOUND_NOTICE;
 
 @Service
 @RequiredArgsConstructor
@@ -49,8 +54,12 @@ public class NoticeService {
         else{
             noticeDocumentList = noticeRepository.findAllByTypeAndTagsContaining(type, tag, pageable);
         }
+        List<NoticeList> noticeLists = noticeDocumentList
+                .stream()
+                .map(NoticeList::toNoticeList)
+                .collect(Collectors.toList());
 
-        NoticeListResDto noticeListResDto = NoticeListResDto.toNoticeListResDto(noticeList, noticeDocumentList);
+        NoticeListResDto noticeListResDto = NoticeListResDto.toNoticeListResDto(noticeList, noticeLists);
 
         return noticeListResDto;
     }
@@ -97,5 +106,10 @@ public class NoticeService {
         User user = userService.findUserByRequest(request);
         Page<NoticeDocument> result = elasticQueryService.searchNoticeRecommend(user.getGrade(), user.getMajor(), "notice", pageable);
         return result;
+    }
+
+    public NoticeDocument noticeDetail(String noticeId) {
+        NoticeDocument noticeDocument = noticeRepository.findById(noticeId).orElseThrow(() -> new BaseException(NOT_FOUND_NOTICE));
+        return noticeDocument;
     }
 }
