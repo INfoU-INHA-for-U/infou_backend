@@ -56,7 +56,7 @@ public class NoticeController {
                     @Parameter(name="pageable", description = "페이징 관련 정보를 입력합니다. (sort 예시: {date,desc}, {date,asc})", required = true)
             }
     )
-    @ExeTimer
+    @ExeTimer 
     @GetMapping
     public BaseResponse NoticeList(HttpServletRequest request, @RequestParam(required = false) String type, @RequestParam(required = false) String tag, Pageable pageable){
 
